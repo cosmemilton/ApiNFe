@@ -1,0 +1,18 @@
+{
+	"name": "ApiNFe",
+	"description": "",
+	"version": "1.0.0",
+	"homepage": "",
+	"mainsrc": "./",
+	"projects": [],
+	"dependencies": {
+		"github.com/hashload/handle-exception": "^0.1.8",
+		"github.com/hashload/horse": "^3.1.5",
+		"github.com/hashload/horse-cors": "^1.0.6",
+		"github.com/hashload/horse-jwt": "^2.0.14",
+		"github.com/hashload/horse-logger": "^2.0.7",
+		"github.com/hashload/horse-logger-provider-logfile": "^1.0.10",
+		"github.com/hashload/horse-octet-stream": "^1.9.9",
+		"github.com/hashload/jhonson": "^1.1.6"
+	}
+}
