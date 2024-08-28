@@ -11,7 +11,7 @@ uses
   uMain in 'uMain.pas',
   apinfe.dto.config in 'dto\apinfe.dto.config.pas',
   apinfe.dto.config.mongo in 'dto\apinfe.dto.config.mongo.pas',
-  apinfe.controller in 'controller\apinfe.controller.pas',
+  apinfe.controller.base in 'controller\apinfe.controller.base.pas',
   apinfe.constants in 'constants\apinfe.constants.pas',
   ThreadFileLog in 'utils\ThreadFileLog.pas',
   ThreadUtilities in 'utils\ThreadUtilities.pas',
@@ -20,7 +20,8 @@ uses
   Grijjy.MongoDB.Queries in 'components\mongo\Grijjy.MongoDB.Queries.pas',
   apinfe.adapter.mongo in 'components\apinfe.adapter.mongo.pas',
   apinfe.adapter.tocontroller in 'utils\apinfe.adapter.tocontroller.pas',
-  apinfe.claims in 'utils\apinfe.claims.pas';
+  apinfe.claims in 'utils\apinfe.claims.pas',
+  apinfe.controller in 'controller\apinfe.controller.pas';
 
 procedure Console(cmd: String);
 begin

@@ -114,7 +114,7 @@
         <DCCReference Include="uMain.pas"/>
         <DCCReference Include="dto\apinfe.dto.config.pas"/>
         <DCCReference Include="dto\apinfe.dto.config.mongo.pas"/>
-        <DCCReference Include="controller\apinfe.controller.pas"/>
+        <DCCReference Include="controller\apinfe.controller.base.pas"/>
         <DCCReference Include="constants\apinfe.constants.pas"/>
         <DCCReference Include="utils\ThreadFileLog.pas"/>
         <DCCReference Include="utils\ThreadUtilities.pas"/>
@@ -124,6 +124,7 @@
         <DCCReference Include="components\apinfe.adapter.mongo.pas"/>
         <DCCReference Include="utils\apinfe.adapter.tocontroller.pas"/>
         <DCCReference Include="utils\apinfe.claims.pas"/>
+        <DCCReference Include="controller\apinfe.controller.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

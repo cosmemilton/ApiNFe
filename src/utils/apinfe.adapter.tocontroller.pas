@@ -16,6 +16,7 @@ type
       procedure updateCompany(Req: THorseRequest; Res: THorseResponse; Next: TProc);
       procedure activeCompany(Req: THorseRequest; Res: THorseResponse; Next: TProc);
       procedure suspendCompany(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+      procedure deleteCompany(Req: THorseRequest; Res: THorseResponse; Next: TProc);
       procedure createdCompany(Req: THorseRequest; Res: THorseResponse; Next: TProc);
       procedure configIssuance(Req: THorseRequest; Res: THorseResponse; Next: TProc);
       procedure getSecret(Req: THorseRequest; Res: THorseResponse; Next: TProc);
@@ -70,6 +71,12 @@ begin
 end;
 
 procedure TAdapterApiNFeController.cretedNFe(Req: THorseRequest;
+  Res: THorseResponse; Next: TProc);
+begin
+
+end;
+
+procedure TAdapterApiNFeController.deleteCompany(Req: THorseRequest;
   Res: THorseResponse; Next: TProc);
 begin
 

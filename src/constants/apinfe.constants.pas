@@ -25,7 +25,7 @@ const
   pathSchemasBase   = pathNFeBase + 'schemas\';
   versaoServ        = 'API_NFe 1.00';
 
-  {$REGION 'Responsavel Tecnico (Fake)'}
+  {$REGION 'Responsavel Tecnico (Fake - https://www.4devs.com.br/gerador_de_cpf)'}
   infRespTecCNPJ    = '43427626849';
   infRespTecContato = 'Lucas Mateus Pedro Ribeiro';
   infRespTecEmail   = 'lucas-ribeiro95@planicoop.com.br';
@@ -33,6 +33,7 @@ const
   {$ENDREGION}
 
   DefaultNamePrint = 'Microsoft Print to PDF';
+
   ufAC = 'AC';
   ufAL = 'AL';
   ufAP = 'AP';
