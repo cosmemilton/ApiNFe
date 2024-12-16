@@ -1,15 +1,22 @@
-unit apinfe.adapter.tocontroller;
+﻿unit emissorfiscal.routertocontroller;
 
 interface
 
 uses
   System.SysUtils,
   System.Classes,
-  Horse;
+  System.JSON,
+  Horse,
+  emissorfiscal.controller,
+  emissorfiscal.helper;
 
 type
   TAdapterApiNFeController = class
+    private
+      FController: TControllerApiNFe;
     public
+      procedure LoginAdmin(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+      procedure getAllAdminUsers(Req: THorseRequest; Res: THorseResponse; Next: TProc);
       procedure getAllClients(Req: THorseRequest; Res: THorseResponse; Next: TProc);
       procedure getAllCompany(Req: THorseRequest; Res: THorseResponse; Next: TProc);
       procedure getCompany(Req: THorseRequest; Res: THorseResponse; Next: TProc);
@@ -33,6 +40,8 @@ type
       procedure getXMLbyKey(Req: THorseRequest; Res: THorseResponse; Next: TProc);
       procedure getPDFbyKey(Req: THorseRequest; Res: THorseResponse; Next: TProc);
       procedure getAllIssuance(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+    published
+      constructor Create(aController: TControllerApiNFe);
   end;
 
 implementation
@@ -56,6 +65,11 @@ procedure TAdapterApiNFeController.configIssuance(Req: THorseRequest;
   Res: THorseResponse; Next: TProc);
 begin
 
+end;
+
+constructor TAdapterApiNFeController.Create(aController: TControllerApiNFe);
+begin
+  FController := aController;
 end;
 
 procedure TAdapterApiNFeController.createdCompany(Req: THorseRequest;
@@ -94,6 +108,18 @@ begin
 
 end;
 
+procedure TAdapterApiNFeController.getAllAdminUsers(Req: THorseRequest;
+  Res: THorseResponse; Next: TProc);
+begin
+  Self.FController.getAllAdminUsers();
+  try
+     Res.SendSuccess( Self.FController.getAllAdminUsers() );
+  except
+    on e: Exception do
+      Res.SendBadRequest(e);
+  end;
+end;
+
 procedure TAdapterApiNFeController.getAllClients(Req: THorseRequest;
   Res: THorseResponse; Next: TProc);
 begin
@@ -103,7 +129,7 @@ end;
 procedure TAdapterApiNFeController.getAllCompany(Req: THorseRequest;
   Res: THorseResponse; Next: TProc);
 begin
-
+  FController.getAllClients;
 end;
 
 procedure TAdapterApiNFeController.getAllIssuance(Req: THorseRequest;
@@ -158,6 +184,22 @@ procedure TAdapterApiNFeController.getXMLbyKey(Req: THorseRequest;
   Res: THorseResponse; Next: TProc);
 begin
 
+end;
+
+procedure TAdapterApiNFeController.LoginAdmin(Req: THorseRequest;
+  Res: THorseResponse; Next: TProc);
+var jsoReq: TJSONValue;
+var username, password, jwt: string;
+begin
+  jsoReq   := Req.Body<TJSONObject> as TJSONObject;
+  username := jsoReq.GetValue<string>('username');
+  password := jsoReq.GetValue<string>('password');
+  jwt := Self.FController.ReturnJWTLoginAdmin(username,password);
+
+  if (jwt='') then
+    Res.SendBadRequest('Usuário ou senha inválidos')
+  else
+    Res.SendSuccess('jwt', jwt);
 end;
 
 procedure TAdapterApiNFeController.suspendCompany(Req: THorseRequest;

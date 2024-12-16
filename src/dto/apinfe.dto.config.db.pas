@@ -1,4 +1,4 @@
-unit apinfe.dto.config;
+unit apinfe.dto.config.db;
 
 interface
 
@@ -9,15 +9,21 @@ type
     FPassword: string;
     FHostName: string;
     FUserName: string;
+    FDataBase: string;
+  protected
+    class var m_instance: TDBConfig;
   public
     procedure SetHostName(const Value: string);
     procedure SetPassword(const Value: string);
     procedure SetPort(const Value: Word);
     procedure SetUserName(const Value: string);
+    procedure SetDatabase(const Value: string);
+    property DataBase: string read FDataBase;
     property HostName: string read FHostName;
     property UserName: string read FUserName;
     property Password: string read FPassword;
-    property Port: Word read FPort write SetPort;
+    property Port: Word read FPort;
+    class function getInstance: TDBConfig;
   end;
 
 implementation
@@ -44,6 +50,17 @@ begin
   FUserName := Value;
 end;
 
+procedure TDBConfig.SetDatabase(const Value: string);
+begin
+  FDatabase := Value;
+end;
 
+class function TDBConfig.getInstance: TDBConfig;
+begin
+  if not Assigned(m_instance) then
+    m_instance := TDBConfig.Create;
+  
+  Result := m_instance;  
+end;
 
 end.

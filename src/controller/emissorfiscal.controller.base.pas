@@ -1,4 +1,4 @@
-unit apinfe.controller.base;
+unit emissorfiscal.controller.base;
 
 interface
 
@@ -9,22 +9,19 @@ uses
 
   ThreadFileLog,
   ThreadUtilities,
-  apinfe.dto.config,
+  apinfe.dto.config.db,
+  apinfe.dto.config.jwt,
   apinfe.adapter.mongo,
   apinfe.dto.config.mongo,
   apinfe.constants;
 
 type
-  TControllerApiBase = class
+  TControllerApiNFeBase = class
     private
       FModule: string;
       FHostName: string;
       FEnableHTTPS: Boolean;
       FEnableHTTP: Boolean;
-      FDataBase: TDBConfig;
-
-      FtokenLifeTime: Integer;
-      FPrivateKey: string;
       FHabilitaLog: Boolean;
       FTThreadFileLog: TThreadFileLog;
       FConfigMongoDB: TConfigMongoDB;
@@ -32,23 +29,17 @@ type
       procedure SetModule(const Value: string);
       procedure SetEnableHTTP(const Value: Boolean);
       procedure SetEnableHTTPS(const Value: Boolean);
-      procedure SetDataBase(const Value: TDBConfig);
-      procedure SetTokenLifeTime(const Value: Integer);
-      procedure SetPrivateKey(const Value: string);
       procedure SetHabilitaLog(const Value: Boolean);
       procedure SetConfigMongoDB(const Value: TConfigMongoDB);
     public
-      property DataBase: TDBConfig read FDataBase write SetDataBase;
       property HostName: string read FHostName write SetHostName;
       property Module: string read FModule write SetModule;
       property EnableHTTP: Boolean read FEnableHTTP default False;
       property EnableHTTPS: Boolean read FEnableHTTPS default True;
-      property tokenLifeTime: Integer read FtokenLifeTime;
-      property privateKey: string read FPrivateKey;
       property HabilitaLog: Boolean read FHabilitaLog default False;
       property ConfigMongoDB: TConfigMongoDB read FConfigMongoDB write setConfigMongoDB;
       procedure FileLog(const aLog: string);
-
+      //
     published
       constructor Create;
   end;
@@ -57,10 +48,9 @@ implementation
 
 { TControllerApi }
 
-constructor TControllerApiBase.Create;
+constructor TControllerApiNFeBase.Create;
 var ini: Tinifile;
 begin
-  FDataBase:= TDBConfig.Create;
   FConfigMongoDB:= TConfigMongoDB.Create;
   ForceDirectories(path);
   ForceDirectories(pathLog);
@@ -68,15 +58,17 @@ begin
   ini:= Tinifile.Create(iniFileName);
   if FileExists(iniFileName) then
     begin
-      Self.DataBase.SetHostName(ini.ReadString('DB','hostname', localhost));
-      Self.DataBase.SetUserName(ini.ReadString('DB','username', 'UserNameDB'));
-      Self.DataBase.SetPassword(ini.ReadString('DB','password', 'PasswordDB'));
-      Self.DataBase.SetPort(ini.ReadInteger('DB','port', 5432));
+      TDBConfig.getInstance().SetHostName(ini.ReadString('DB','hostname', localhost));
+      TDBConfig.getInstance().SetUserName(ini.ReadString('DB','username', 'UserNameDB'));
+      TDBConfig.getInstance().SetPassword(ini.ReadString('DB','password', 'PasswordDB'));
+      TDBConfig.getInstance().SetPort(ini.ReadInteger('DB','port', 5432));
+      TDBConfig.getInstance().SetDatabase(ini.ReadString('DB','database', 'emissorfiscal'));
+      TJWTConfigDTO.getInstance.SetExpirationTime(ini.ReadInteger('Token','TempoDeVidaEmMinutos', 5));
       Self.SetHostName(ini.ReadString('IIS','hostName','localhost/mobile.dll'));
       Self.SetModule(ini.ReadString('IIS','module', 'mobile.dll'));
       Self.SetEnableHTTP(ini.ReadBool('IIS','EnableHttpSwagger'  , False));
       Self.SetEnableHTTPS(ini.ReadBool('IIS','EnableHttpsSwagger'  , True));
-      Self.SetTokenLifeTime(ini.ReadInteger('Token','TempoDeVidaEmMinutos', 5));
+
       Self.SetHabilitaLog(ini.ReadBool('Geral','HabilitaLog', False));
       Self.ConfigMongoDB.SetPathDB(ini.ReadString('MongoDB','PathDB', ''));
       Self.ConfigMongoDB.SetNameDB(ini.ReadString('MongoDB','NameDB', ''));
@@ -84,28 +76,30 @@ begin
     end
   else
     begin
-      Self.DataBase.SetHostName(localhost);
-      Self.DataBase.SetUserName('UserNameDB');
-      Self.DataBase.SetPassword('PasswordDB');
-      Self.DataBase.SetPort(5432);
+      TDBConfig.getInstance().SetHostName(localhost);
+      TDBConfig.getInstance().SetUserName('UserNameDB');
+      TDBConfig.getInstance().SetPassword('PasswordDB');
+      TDBConfig.getInstance().SetPort( 5432);
+      TDBConfig.getInstance().SetDatabase('emissorfiscal');
+      TJWTConfigDTO.getInstance().SetExpirationTime( 5 );
       Self.SetHostName('localhost/ApiNFeIsapi.dll');
       Self.SetModule('ApiNFeIsapi.dll');
       Self.SetEnableHTTP(False);
       Self.SetEnableHTTPS(True);
-      Self.SetTokenLifeTime(5);
       Self.SetHabilitaLog(False);
       //
-      ini.WriteString('DB'  ,'hostname', Self.DataBase.HostName);
-      ini.WriteString('DB'  ,'username', Self.DataBase.UserName);
-      ini.WriteString('DB'  ,'password', Self.DataBase.Password);
-      ini.WriteInteger('DB' ,'port'    , Self.DataBase.Port);
+      ini.WriteString('DB'  ,'hostname', TDBConfig.getInstance().HostName);
+      ini.WriteString('DB'  ,'username', TDBConfig.getInstance().UserName);
+      ini.WriteString('DB'  ,'password', TDBConfig.getInstance().Password);
+      ini.WriteInteger('DB' ,'port'    , TDBConfig.getInstance().Port);
+      ini.WriteString('DB' ,'database' , TDBConfig.getInstance().Database);
       //
       ini.WriteString('IIS','hostName', Self.HostName);
       ini.WriteString('IIS','module'  , Self.Module);
       ini.WriteBool('IIS','EnableHttpSwagger'  , Self.EnableHTTP);
       ini.WriteBool('IIS','EnableHttpsSwagger'  , Self.EnableHTTPS);
       //
-      ini.WriteInteger('Token','TempoDeVidaEmMinutos', Self.tokenLifeTime);
+      ini.WriteInteger('Token','TempoDeVidaEmMinutos', TJWTConfigDTO.getInstance().ExpirationTime);
       //
       ini.WriteBool('Geral','HabilitaLog', Self.HabilitaLog);
       //
@@ -117,7 +111,7 @@ begin
 
 end;
 
-procedure TControllerApiBase.FileLog(const aLog: string);
+procedure TControllerApiNFeBase.FileLog(const aLog: string);
 begin
   if Self.FHabilitaLog then
     begin
@@ -132,49 +126,36 @@ begin
     end;
 end;
 
-procedure TControllerApiBase.SetConfigMongoDB(const Value: TConfigMongoDB);
+procedure TControllerApiNFeBase.SetConfigMongoDB(const Value: TConfigMongoDB);
 begin
-
+  FConfigMongoDB:= Value;
 end;
 
-procedure TControllerApiBase.SetDataBase(const Value: TDBConfig);
-begin
 
+procedure TControllerApiNFeBase.SetEnableHTTP(const Value: Boolean);
+begin
+  FEnableHTTP:= Value;
 end;
 
-procedure TControllerApiBase.SetEnableHTTP(const Value: Boolean);
+procedure TControllerApiNFeBase.SetEnableHTTPS(const Value: Boolean);
 begin
-
+  FEnableHTTPS:= Value;
 end;
 
-procedure TControllerApiBase.SetEnableHTTPS(const Value: Boolean);
+procedure TControllerApiNFeBase.SetHabilitaLog(const Value: Boolean);
 begin
-
+  FHabilitaLog:= Value;
 end;
 
-procedure TControllerApiBase.SetHabilitaLog(const Value: Boolean);
+procedure TControllerApiNFeBase.SetHostName(const Value: string);
 begin
-
+  FHostName:= Value;
 end;
 
-procedure TControllerApiBase.SetHostName(const Value: string);
+procedure TControllerApiNFeBase.SetModule(const Value: string);
 begin
-
+  FModule:= Value;
 end;
 
-procedure TControllerApiBase.SetModule(const Value: string);
-begin
-
-end;
-
-procedure TControllerApiBase.SetPrivateKey(const Value: string);
-begin
-
-end;
-
-procedure TControllerApiBase.SetTokenLifeTime(const Value: Integer);
-begin
-
-end;
 
 end.

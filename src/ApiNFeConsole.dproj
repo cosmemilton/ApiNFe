@@ -1,8 +1,8 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjectGuid>{F878E691-4AD3-4476-BC0A-AF005919CCF4}</ProjectGuid>
-        <ProjectVersion>19.5</ProjectVersion>
-        <FrameworkType>None</FrameworkType>
+        <ProjectVersion>20.1</ProjectVersion>
+        <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
@@ -112,19 +112,80 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="uMain.pas"/>
-        <DCCReference Include="dto\apinfe.dto.config.pas"/>
+        <DCCReference Include="dto\apinfe.dto.config.jwt.pas"/>
         <DCCReference Include="dto\apinfe.dto.config.mongo.pas"/>
-        <DCCReference Include="controller\apinfe.controller.base.pas"/>
+        <DCCReference Include="controller\emissorfiscal.controller.base.pas"/>
         <DCCReference Include="constants\apinfe.constants.pas"/>
         <DCCReference Include="utils\ThreadFileLog.pas"/>
         <DCCReference Include="utils\ThreadUtilities.pas"/>
-        <DCCReference Include="components\mongo\Grijjy.MongoDB.pas"/>
-        <DCCReference Include="components\mongo\Grijjy.MongoDB.Protocol.pas"/>
-        <DCCReference Include="components\mongo\Grijjy.MongoDB.Queries.pas"/>
         <DCCReference Include="components\apinfe.adapter.mongo.pas"/>
-        <DCCReference Include="utils\apinfe.adapter.tocontroller.pas"/>
         <DCCReference Include="utils\apinfe.claims.pas"/>
-        <DCCReference Include="controller\apinfe.controller.pas"/>
+        <DCCReference Include="controller\emissorfiscal.controller.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.BinaryCoding.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.Bson.IO.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.Bson.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.Bson.Path.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.Bson.Serialization.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.CloudLogging.InstanceTracker.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.CloudLogging.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.CloudLogging.Protocol.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.Collections.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.Console.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.DateUtils.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.Hash.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.Hooking.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.Http.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.JWT.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.MemoryPool.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.OpenSSL.API.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.OpenSSL.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.PropertyBag.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.ProtocolBuffers.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.RemotePush.Receiver.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.RemotePush.Sender.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.Scram.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.SocketPool.Win.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.System.Console.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.System.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.SysUtils.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.TimerQueue.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.TimerQueue.Win.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.Uri.pas"/>
+        <DCCReference Include="components\GrijjyFoundation\Grijjy.Winsock2.pas"/>
+        <DCCReference Include="components\DelphiZeroMQ\PascalZMQ.pas"/>
+        <DCCReference Include="components\DelphiZeroMQ\ZMQ.API.pas"/>
+        <DCCReference Include="components\DelphiZeroMQ\ZMQ.BrokerProtocol.pas"/>
+        <DCCReference Include="components\DelphiZeroMQ\ZMQ.ClientProtocol.pas"/>
+        <DCCReference Include="components\DelphiZeroMQ\ZMQ.Protocol.pas"/>
+        <DCCReference Include="components\DelphiZeroMQ\ZMQ.Shared.pas"/>
+        <DCCReference Include="components\DelphiZeroMQ\ZMQ.WorkerProtocol.pas"/>
+        <DCCReference Include="components\DelphiRemotePushSender\Nghttp2.pas"/>
+        <DCCReference Include="components\GrijjyMongoDB\Grijjy.MongoDB.pas"/>
+        <DCCReference Include="components\GrijjyMongoDB\Grijjy.MongoDB.Protocol.pas"/>
+        <DCCReference Include="components\GrijjyMongoDB\Grijjy.MongoDB.Queries.pas"/>
+        <DCCReference Include="dto\emissorfiscal.dto.adminuser.pas"/>
+        <DCCReference Include="dto\emissorfiscal.dto.cest.pas"/>
+        <DCCReference Include="dto\emissorfiscal.dto.cfop.pas"/>
+        <DCCReference Include="dto\emissorfiscal.dto.companyaddresses.pas"/>
+        <DCCReference Include="dto\emissorfiscal.dto.companycontacts.pas"/>
+        <DCCReference Include="dto\emissorfiscal.dto.companyinvoicesettings.pas"/>
+        <DCCReference Include="dto\emissorfiscal.dto.ncm.pas"/>
+        <DCCReference Include="dto\emissorfiscal.dto.participantaddresses.pas"/>
+        <DCCReference Include="dto\emissorfiscal.dto.participants.pas"/>
+        <DCCReference Include="dto\emissorfiscal.dto.products.pas"/>
+        <DCCReference Include="dto\emissorfiscal.dto.subscriptionplan.pas"/>
+        <DCCReference Include="dto\emissorfiscal.dto.workspacecompanies.pas"/>
+        <DCCReference Include="dto\emissorfiscal.dto.workspaces.pas"/>
+        <DCCReference Include="dto\emissorfiscal.dto.workspaceusers.pas"/>
+        <DCCReference Include="dto\emissorfiscal.querybuild.pas"/>
+        <DCCReference Include="dao\emissorfiscal.dao.adminuser.pas"/>
+        <DCCReference Include="dao\emissorfiscal.databaseconnection.pas"/>
+        <DCCReference Include="utils\emissorfiscal.routertocontroller.pas"/>
+        <DCCReference Include="utils\emissorfiscal.helper.pas"/>
+        <DCCReference Include="utils\emissorfiscal.queryhelper.pas"/>
+        <DCCReference Include="dto\apinfe.dto.config.db.pas"/>
+        <None Include="components\GrijjyFoundation\Grijjy.inc"/>
+        <None Include="components\GrijjyMongoDB\Grijjy.inc"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -169,6 +230,18 @@
                 <DeployFile LocalName="..\Win32\Debug\ApiNFeConsole.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>ApiNFeConsole.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="components\GrijjyFoundation\Grijjy.inc" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="components\GrijjyMongoDB\Grijjy.inc" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -262,6 +335,16 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
+                <DeployClass Name="AndroidSplashImageDefV21">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-anydpi-v21</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="Android64">
+                        <RemoteDir>res\drawable-anydpi-v21</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
                 <DeployClass Name="AndroidSplashStyles">
                     <Platform Name="Android">
                         <RemoteDir>res\values</RemoteDir>
@@ -282,6 +365,66 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
+                <DeployClass Name="AndroidSplashStylesV31">
+                    <Platform Name="Android">
+                        <RemoteDir>res\values-v31</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="Android64">
+                        <RemoteDir>res\values-v31</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_AdaptiveIcon">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-anydpi-v26</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="Android64">
+                        <RemoteDir>res\drawable-anydpi-v26</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_AdaptiveIconBackground">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="Android64">
+                        <RemoteDir>res\drawable</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_AdaptiveIconForeground">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="Android64">
+                        <RemoteDir>res\drawable</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_AdaptiveIconMonochrome">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="Android64">
+                        <RemoteDir>res\drawable</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_AdaptiveIconV33">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-anydpi-v33</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="Android64">
+                        <RemoteDir>res\drawable-anydpi-v33</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
                 <DeployClass Name="Android_Colors">
                     <Platform Name="Android">
                         <RemoteDir>res\values</RemoteDir>
@@ -289,6 +432,16 @@
                     </Platform>
                     <Platform Name="Android64">
                         <RemoteDir>res\values</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_ColorsDark">
+                    <Platform Name="Android">
+                        <RemoteDir>res\values-night-v21</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="Android64">
+                        <RemoteDir>res\values-night-v21</RemoteDir>
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
@@ -459,6 +612,56 @@
                     </Platform>
                     <Platform Name="Android64">
                         <RemoteDir>res\values</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_VectorizedNotificationIcon">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-anydpi-v24</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="Android64">
+                        <RemoteDir>res\drawable-anydpi-v24</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_VectorizedSplash">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="Android64">
+                        <RemoteDir>res\drawable</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_VectorizedSplashDark">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-night-anydpi-v21</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="Android64">
+                        <RemoteDir>res\drawable-night-anydpi-v21</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_VectorizedSplashV31">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-anydpi-v31</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="Android64">
+                        <RemoteDir>res\drawable-anydpi-v31</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_VectorizedSplashV31Dark">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-night-anydpi-v31</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="Android64">
+                        <RemoteDir>res\drawable-night-anydpi-v31</RemoteDir>
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>

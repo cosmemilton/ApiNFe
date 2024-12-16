@@ -15,9 +15,9 @@ uses
   Horse.JWT,
   Horse.Logger.Provider.LogFile,
   Horse.Callback,
-  apinfe.controller,
+  emissorfiscal.controller,
   apinfe.claims,
-  apinfe.adapter.tocontroller;
+  emissorfiscal.routertocontroller;
 
 
 type
@@ -27,7 +27,7 @@ type
   TApi = class
     private
       FLogFileConfig: THorseLoggerLogFileConfig;
-      FController: TControllerApi;
+      FController: TControllerApiNFe;
       FAdapter: TAdapterApiNFeController;
       constructor Create;
       function AuthenticatedClient(): Horse.THorseCallback;
@@ -41,6 +41,7 @@ type
         procedure Listen(CallBack: TConsole);
         procedure Log(CallBack: THorseCallback);
       {$ENDIF}
+      destructor Destroy; override;
 
 
   end;
@@ -51,26 +52,34 @@ var
 implementation
 
 uses
-   apinfe.constants;
+   apinfe.constants, apinfe.dto.config.jwt;
 
 { TAPI }
 
 
 function TApi.AuthenticatedAdmin: Horse.THorseCallback;
 begin
-Result:=  HorseJWT(FController.privateKey, THorseJWTConfig.New.SessionClass(TClaims) );
+Result:=  HorseJWT(TJWTConfigDTO.getInstance.PrivateKey, THorseJWTConfig.New.SessionClass(TClaims) );
 end;
 
 function TApi.AuthenticatedClient: Horse.THorseCallback;
 begin
-Result:=  HorseJWT(FController.privateKey, THorseJWTConfig.New.SessionClass(TClaims) );
+Result:=  HorseJWT(TJWTConfigDTO.getInstance.PrivateKey, THorseJWTConfig.New.SessionClass(TClaims) );
 end;
 
 constructor TApi.Create();
 begin
-  FController:= TControllerApi.Create();
+  FController:= TControllerApiNFe.Create();
+  FAdapter   := TAdapterApiNFeController.Create(FController);
 end;
 
+
+destructor TApi.Destroy;
+begin
+  FController.Free;
+  FAdapter.Free;
+  inherited;
+end;
 
 class procedure TApi.Initialize;
 
@@ -90,6 +99,11 @@ begin
     .Use(OctetStream)
     .Use(HandleException)
     .Group
+      .Prefix(apiBaseAdmin)
+      .Post('/login'      , Api.FAdapter.LoginAdmin)
+      .Prefix(apiBaseAdmin)
+      .AddCallback(Api.AuthenticatedAdmin())
+      .Get('/user/all'      , Api.FAdapter.getAllAdminUsers)
       .Prefix(apiBaseAdmin)
       .AddCallback(Api.AuthenticatedAdmin())
       .Get('/company/all'      , Api.FAdapter.getAllCompany)

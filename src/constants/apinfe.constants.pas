@@ -24,6 +24,7 @@ const
   localhost         = 'localhost';
   pathSchemasBase   = pathNFeBase + 'schemas\';
   versaoServ        = 'API_NFe 1.00';
+  PathPrivateKey    = path + 'privateKey.md5';
 
   {$REGION 'Responsavel Tecnico (Fake - https://www.4devs.com.br/gerador_de_cpf)'}
   infRespTecCNPJ    = '43427626849';
