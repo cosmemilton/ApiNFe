@@ -4,7 +4,7 @@ interface
 
 
 uses
-  System.Classes, apinfe.constants;
+  System.Classes, apinfe.constants, apinfe.constants.errors;
 
 type
   TJWTConfigDTO = class
@@ -41,10 +41,10 @@ begin
         FPrivateKey:= tKeyMD5.Text.Trim;
       end
     else
-      raise Exception.Create('Chave de segurança não implementada.');
+      raise Exception.Create(ERROR_PRIVATE_KEY_NOT_IMPLEMENTED);
       
     if not (FPrivateKey.Length=32) then
-      raise Exception.Create('Chave de segurança inválida.');
+      raise Exception.Create(ERROR_INVALID_PRIVATE_KEY);
   finally
     if Assigned(tKeyMD5) then
       FreeAndNil(tKeyMD5);

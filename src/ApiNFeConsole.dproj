@@ -180,10 +180,20 @@
         <DCCReference Include="dto\emissorfiscal.querybuild.pas"/>
         <DCCReference Include="dao\emissorfiscal.dao.adminuser.pas"/>
         <DCCReference Include="dao\emissorfiscal.databaseconnection.pas"/>
-        <DCCReference Include="utils\emissorfiscal.routertocontroller.pas"/>
-        <DCCReference Include="utils\emissorfiscal.helper.pas"/>
+        <DCCReference Include="utils\emissorfiscal.helper.horse.pas"/>
         <DCCReference Include="utils\emissorfiscal.queryhelper.pas"/>
         <DCCReference Include="dto\apinfe.dto.config.db.pas"/>
+        <DCCReference Include="dao\emissorfiscal.dao.workspaces.pas"/>
+        <DCCReference Include="dao\emissorfiscal.dao.workspaceusers.pas"/>
+        <DCCReference Include="router\api.router.admin.pas"/>
+        <DCCReference Include="router\api.router.client.pas"/>
+        <DCCReference Include="gateway\emissorfiscal.gateway.tocontroller.pas"/>
+        <DCCReference Include="utils\emissorfiscal.validate.pas"/>
+        <DCCReference Include="utils\emissorfiscal.email.pas"/>
+        <DCCReference Include="dto\apinfe.dto.config.emailserver.pas"/>
+        <DCCReference Include="utils\emissorfiscal.helper.strings.pas"/>
+        <DCCReference Include="types\emissorfiscal.types.pas"/>
+        <DCCReference Include="constants\apinfe.constants.errors.pas"/>
         <None Include="components\GrijjyFoundation\Grijjy.inc"/>
         <None Include="components\GrijjyMongoDB\Grijjy.inc"/>
         <BuildConfiguration Include="Base">
@@ -1202,6 +1212,9 @@
                 <Platform value="Win32">True</Platform>
                 <Platform value="Win64">False</Platform>
             </Platforms>
+            <UnitTesting>
+                <TestProjectName>C:\MeusProjetos\delphi\ApiNFe\src\Test\ApiNFeConsoleTests.dproj</TestProjectName>
+            </UnitTesting>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>
     </ProjectExtensions>

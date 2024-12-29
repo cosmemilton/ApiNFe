@@ -3,7 +3,9 @@ unit emissorfiscal.dto.participants;
 interface
 
 uses
-  System.Classes, System.SysUtils, emissorfiscal.querybuild;
+  System.Classes, System.SysUtils,
+  emissorfiscal.querybuild,
+  apinfe.constants.errors;
 
 type
   TRegistrationType = (rtAmbos, rtCliente, rtFornecedor);
@@ -55,7 +57,7 @@ begin
   else if FRegistrationType = 'fornecedor' then
     Result := rtFornecedor
   else
-    raise Exception.Create('Invalid RegistrationType value');
+    raise Exception.Create(ERROR_INVALID_PARTICIPANT_TYPE);
 end;
 
 procedure TParticipantDTO.SetRegistrationType(const Value: TRegistrationType);
@@ -65,7 +67,7 @@ begin
     rtCliente: FRegistrationType := 'cliente';
     rtFornecedor: FRegistrationType := 'fornecedor';
   else
-    raise Exception.Create('Invalid RegistrationType value');
+    raise Exception.Create(ERROR_INVALID_PARTICIPANT_TYPE);
   end;
 end;
 
@@ -76,7 +78,7 @@ begin
   else if FPersonType = 'juridica' then
     Result := ptJuridica
   else
-    raise Exception.Create('Invalid PersonType value');
+    raise Exception.Create(ERROR_INVALID_PERSON_TYPE);
 end;
 
 procedure TParticipantDTO.SetPersonType(const Value: TPersonType);
@@ -85,7 +87,7 @@ begin
     ptFisica: FPersonType := 'fisica';
     ptJuridica: FPersonType := 'juridica';
   else
-    raise Exception.Create('Invalid PersonType value');
+    raise Exception.Create(ERROR_INVALID_PERSON_TYPE);
   end;
 end;
 

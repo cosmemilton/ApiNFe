@@ -25,6 +25,7 @@ const
   pathSchemasBase   = pathNFeBase + 'schemas\';
   versaoServ        = 'API_NFe 1.00';
   PathPrivateKey    = path + 'privateKey.md5';
+  GUID_NULL = '00000000-0000-0000-0000-000000000000';
 
   {$REGION 'Responsavel Tecnico (Fake - https://www.4devs.com.br/gerador_de_cpf)'}
   infRespTecCNPJ    = '43427626849';

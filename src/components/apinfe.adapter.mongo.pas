@@ -9,7 +9,8 @@ uses
   Grijjy.MongoDB.Queries,
   system.JSON,
   System.SysUtils,
-  System.DateUtils;
+  System.DateUtils,
+  apinfe.constants.errors;
 
 type
     TtpCollections = (cdgApi, cdgEmail);
@@ -96,7 +97,7 @@ if not Assigned(FMongoComponent) then
     ini:= Tinifile.Create(iniFileName);
     try
       if not ini.ReadBool('MongoDB','UseMongo', False) then
-        raise Exception.Create('MongoDB não configurado.');
+        raise Exception.Create(ERROR_MONGODB_NOT_CONFIGURED);
       FMongoComponent:= TMongoComponent
                               .Create(
                                 ini.ReadString('MongoDB','PathDB', ''),

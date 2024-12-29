@@ -11,6 +11,7 @@ uses
   ThreadUtilities,
   apinfe.dto.config.db,
   apinfe.dto.config.jwt,
+  apinfe.dto.config.emailserver,
   apinfe.adapter.mongo,
   apinfe.dto.config.mongo,
   apinfe.constants;
@@ -39,8 +40,7 @@ type
       property HabilitaLog: Boolean read FHabilitaLog default False;
       property ConfigMongoDB: TConfigMongoDB read FConfigMongoDB write setConfigMongoDB;
       procedure FileLog(const aLog: string);
-      //
-    published
+      
       constructor Create;
   end;
 
@@ -63,6 +63,11 @@ begin
       TDBConfig.getInstance().SetPassword(ini.ReadString('DB','password', 'PasswordDB'));
       TDBConfig.getInstance().SetPort(ini.ReadInteger('DB','port', 5432));
       TDBConfig.getInstance().SetDatabase(ini.ReadString('DB','database', 'emissorfiscal'));
+      TEmailServerDTO.getInstance().setHost(ini.ReadString('Email','host', 'smtp.gmail.com'));
+      TEmailServerDTO.getInstance().setPort(ini.ReadInteger('Email','port', 587));
+      TEmailServerDTO.getInstance().setUsername(ini.ReadString('Email','username', ''));
+      TEmailServerDTO.getInstance().setPassword(ini.ReadString('Email','password', ''));
+      TEmailServerDTO.getInstance().setUseTLS(ini.ReadBool('Email','useTLS', True));
       TJWTConfigDTO.getInstance.SetExpirationTime(ini.ReadInteger('Token','TempoDeVidaEmMinutos', 5));
       Self.SetHostName(ini.ReadString('IIS','hostName','localhost/mobile.dll'));
       Self.SetModule(ini.ReadString('IIS','module', 'mobile.dll'));
@@ -81,6 +86,11 @@ begin
       TDBConfig.getInstance().SetPassword('PasswordDB');
       TDBConfig.getInstance().SetPort( 5432);
       TDBConfig.getInstance().SetDatabase('emissorfiscal');
+      TEmailServerDTO.getInstance().setHost('smtp.gmail.com');
+      TEmailServerDTO.getInstance().setPort(587);
+      TEmailServerDTO.getInstance().setUsername('');
+      TEmailServerDTO.getInstance().setPassword('');
+      TEmailServerDTO.getInstance().setUseTLS(True);
       TJWTConfigDTO.getInstance().SetExpirationTime( 5 );
       Self.SetHostName('localhost/ApiNFeIsapi.dll');
       Self.SetModule('ApiNFeIsapi.dll');
@@ -93,6 +103,12 @@ begin
       ini.WriteString('DB'  ,'password', TDBConfig.getInstance().Password);
       ini.WriteInteger('DB' ,'port'    , TDBConfig.getInstance().Port);
       ini.WriteString('DB' ,'database' , TDBConfig.getInstance().Database);
+      //
+      ini.WriteString('Email' ,'host', TEmailServerDTO.getInstance().Host);
+      ini.WriteInteger('Email','port', TEmailServerDTO.getInstance().Port);
+      ini.WriteString('Email' ,'username', TEmailServerDTO.getInstance().Username);
+      ini.WriteString('Email' ,'password', TEmailServerDTO.getInstance().Password);
+      ini.WriteBool('Email'   ,'useTLS', TEmailServerDTO.getInstance().UseTLS);
       //
       ini.WriteString('IIS','hostName', Self.HostName);
       ini.WriteString('IIS','module'  , Self.Module);

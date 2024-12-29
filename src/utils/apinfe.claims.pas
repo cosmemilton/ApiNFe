@@ -110,7 +110,7 @@ var
 begin
   LJWT := TJWT.Create(TClaims);
   try
-   // Result := TJOSE.Validate(LJWT, aToken, 'MY-PASSWORD');
+    //
   finally
     FreeAndNil(LJWT);
   end;
@@ -120,15 +120,7 @@ class function TClaims.GetClaims(const aToken: string): TClaims;
 var
   LJWT: TJWT;
 begin
-{
-  LJWT := TJWT.Create(TClaims);
-  try
-    TJOSE.Decode(LJWT, aToken, 'MY-PASSWORD');
-    Result := TClaims(LJWT.Claims);
-  finally
-    FreeAndNil(LJWT);
-  end;
-  }
+//
 end;
 
 

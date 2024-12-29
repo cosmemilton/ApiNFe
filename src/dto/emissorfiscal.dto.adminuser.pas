@@ -16,6 +16,8 @@ type
     FPasswordHash: string;
     FCreatedAt: TDateTime;
     FUpdatedAt: TDateTime;
+    FCreatedBy: string;
+    FUpdatedBy: string;
     FMaster: Boolean;
   public
     [FieldName('id')]
@@ -34,7 +36,12 @@ type
     property CreatedAt: TDateTime read FCreatedAt write FCreatedAt;
     [FieldName('updated_at')]
     property UpdatedAt: TDateTime read FUpdatedAt write FUpdatedAt;
+    [FieldName('created_by')]
+    property CreatedBy: string read FCreatedBy write FCreatedBy;
+    [FieldName('updated_by')]
+    property UpdatedBy: string read FUpdatedBy write FUpdatedBy;
     constructor Create;
+    destructor Destroy; override;
   end;
 
 implementation
@@ -44,6 +51,11 @@ implementation
 constructor TAdminUserDTO.Create;
 begin
 inherited Create;
+end;
+
+destructor TAdminUserDTO.Destroy;
+begin
+inherited;
 end;
 
 end.

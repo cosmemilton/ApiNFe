@@ -77,10 +77,20 @@ uses
   emissorfiscal.querybuild in 'dto\emissorfiscal.querybuild.pas',
   emissorfiscal.dao.adminuser in 'dao\emissorfiscal.dao.adminuser.pas',
   emissorfiscal.databaseconnection in 'dao\emissorfiscal.databaseconnection.pas',
-  emissorfiscal.routertocontroller in 'utils\emissorfiscal.routertocontroller.pas',
-  emissorfiscal.helper in 'utils\emissorfiscal.helper.pas',
+  emissorfiscal.helper.horse in 'utils\emissorfiscal.helper.horse.pas',
   emissorfiscal.queryhelper in 'utils\emissorfiscal.queryhelper.pas',
-  apinfe.dto.config.db in 'dto\apinfe.dto.config.db.pas';
+  apinfe.dto.config.db in 'dto\apinfe.dto.config.db.pas',
+  emissorfiscal.dao.workspaces in 'dao\emissorfiscal.dao.workspaces.pas',
+  emissorfiscal.dao.workspaceusers in 'dao\emissorfiscal.dao.workspaceusers.pas',
+  api.router.admin in 'router\api.router.admin.pas',
+  api.router.client in 'router\api.router.client.pas',
+  emissorfiscal.gateway.tocontroller in 'gateway\emissorfiscal.gateway.tocontroller.pas',
+  emissorfiscal.validate in 'utils\emissorfiscal.validate.pas',
+  emissorfiscal.email in 'utils\emissorfiscal.email.pas',
+  apinfe.dto.config.emailserver in 'dto\apinfe.dto.config.emailserver.pas',
+  emissorfiscal.helper.strings in 'utils\emissorfiscal.helper.strings.pas',
+  emissorfiscal.types in 'types\emissorfiscal.types.pas',
+  apinfe.constants.errors in 'constants\apinfe.constants.errors.pas';
 
 procedure Console(cmd: String);
 begin
@@ -105,7 +115,7 @@ end;
 
 begin
   ReportMemoryLeaksOnShutdown := DebugHook <> 0;
-  TApi.Initialize();
-  Api.Log(Terminal);
-  Api.Listen(Console);
+  uMain.TApi.Initialize();
+  uMain.Api.Log(Terminal);
+  uMain.Api.Listen(Console);
 end.

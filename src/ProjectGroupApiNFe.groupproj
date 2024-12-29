@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{19AC69CA-6EFF-4C7F-8CB7-EF5283830B3C}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="ApiNFeConsole.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Test\ApiControllerTest.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="ApiNFeConsole">
+        <MSBuild Projects="ApiNFeConsole.dproj"/>
+    </Target>
+    <Target Name="ApiNFeConsole:Clean">
+        <MSBuild Projects="ApiNFeConsole.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ApiNFeConsole:Make">
+        <MSBuild Projects="ApiNFeConsole.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="ApiControllerTest">
+        <MSBuild Projects="Test\ApiControllerTest.dproj"/>
+    </Target>
+    <Target Name="ApiControllerTest:Clean">
+        <MSBuild Projects="Test\ApiControllerTest.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ApiControllerTest:Make">
+        <MSBuild Projects="Test\ApiControllerTest.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="ApiNFeConsole;ApiControllerTest"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="ApiNFeConsole:Clean;ApiControllerTest:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="ApiNFeConsole:Make;ApiControllerTest:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
