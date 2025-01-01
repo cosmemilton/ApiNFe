@@ -38,7 +38,7 @@ type
 implementation
 
 uses
-  system.IniFiles, apinfe.constants;
+  apinfe.constants, apinfe.dto.config.mongo;
 
 { TMongoComponent }
 
@@ -89,24 +89,14 @@ for t_doc in FMongoComponent.FCollectionAPI.Find(
 end;
 
 class function TMongoComponent.getInstance: TMongoComponent;
-var
-  ini: TIniFile;
 begin
-if not Assigned(FMongoComponent) then
-  begin
-    ini:= Tinifile.Create(iniFileName);
-    try
-      if not ini.ReadBool('MongoDB','UseMongo', False) then
-        raise Exception.Create(ERROR_MONGODB_NOT_CONFIGURED);
-      FMongoComponent:= TMongoComponent
-                              .Create(
-                                ini.ReadString('MongoDB','PathDB', ''),
-                                ini.ReadString('MongoDB','NameDB', '')
-                              );
-    finally
-      FreeAndNil(ini);
-    end;
-  end;
+  if not Assigned(FMongoComponent) then
+    FMongoComponent:= TMongoComponent
+                          .Create(
+                            TConfigMongoDB.getInstance.PathDB,
+                            TConfigMongoDB.getInstance.NameDB
+                          );
+
 Result:= FMongoComponent;
 end;
 

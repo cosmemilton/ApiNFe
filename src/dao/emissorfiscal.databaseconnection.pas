@@ -14,6 +14,10 @@ type
   public
     constructor Create(const AServer, APort, ADatabase, AUsername, APassword: string);
     destructor Destroy; override;
+    procedure StartTransaction;
+    procedure CommitTransaction;
+    procedure RollbackTransaction;
+    function InTransaction: Boolean;
     property Connection: TFDConnection read FConnection;
   end;
 
@@ -23,20 +27,43 @@ constructor TDatabaseConnection.Create(const AServer, APort, ADatabase, AUsernam
 begin
   inherited Create;
   FConnection := TFDConnection.Create(nil);
-  FConnection.DriverName := 'PG';
+  FConnection.Params.DriverID := 'PG';
+  FConnection.Params.Database := ADatabase;
+  FConnection.Params.UserName := AUsername;
+  FConnection.Params.Password := APassword;
   FConnection.Params.Add('Server=' + AServer);
   FConnection.Params.Add('Port=' + APort);
-  FConnection.Params.Add('Database=' + ADatabase);
-  FConnection.Params.Add('User_Name='  + AUsername);
-  FConnection.Params.Add('Password=' + APassword);
-  FConnection.LoginPrompt := False;
+  FConnection.UpdateOptions.LockWait := False;
   FConnection.Connected := True;
 end;
 
 destructor TDatabaseConnection.Destroy;
 begin
-  FreeAndNil(FConnection);
+  FreeAndNil( FConnection );
   inherited Destroy;
+end;
+
+procedure TDatabaseConnection.StartTransaction;
+begin
+  if not FConnection.InTransaction then
+    FConnection.StartTransaction;
+end;
+
+procedure TDatabaseConnection.CommitTransaction;
+begin
+  if FConnection.InTransaction then
+    FConnection.Commit;
+end;
+
+procedure TDatabaseConnection.RollbackTransaction;
+begin
+  if FConnection.InTransaction then
+    FConnection.Rollback;
+end;
+
+function TDatabaseConnection.InTransaction: Boolean;
+begin
+  Result := FConnection.InTransaction;
 end;
 
 end.

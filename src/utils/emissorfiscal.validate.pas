@@ -8,7 +8,7 @@ uses
   apinfe.constants.errors;
 
 type
-  TFieldType = (ftaNA, ftNumber, ftBoolean);
+  TFieldType = (ftaNA, ftNumber, ftBoolean, ftDate, ftDateTime, ftTime);
   TFieldTypeS = (ftbNA, ftString);
 
   TFieldValidation = record
@@ -108,7 +108,6 @@ begin
             end;
           ftBoolean:
             begin
-
               if not TryStrToBool(FieldValue, BoolValue) then
                 Errors.Add(Format(ERROR_FIELD_INVALID_BOOLEAN, [Field.FieldName]));
             end;
@@ -132,6 +131,7 @@ var
   FieldValue: string;
   FloatValue: Double;
   BoolValue: Boolean;
+  DateValue: TDateTime;
 begin
   Errors := TStringList.Create;
   try
@@ -168,6 +168,11 @@ begin
                   if not TryStrToBool(FieldValue, BoolValue) then
                     Errors.Add(Format(ERROR_FIELD_INVALID_BOOLEAN, [Field.FieldName]));
                 end;
+              ftDate, ftDateTime:
+                begin
+                  if not TryStrToDate(FieldValue, DateValue) then
+                    Errors.Add(Format(ERROR_FIELD_INVALID_DATE, [Field.FieldName]));
+                end;  
             end;
         end
         else

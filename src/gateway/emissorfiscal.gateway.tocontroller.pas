@@ -18,7 +18,10 @@ type
     protected
       class var m_instance: TGatewayApiNFe;
     public
-      procedure LoginAdmin(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+    {$REGION 'Admin'}
+      procedure loginAdminByUsername(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+      procedure loginAdminByEmail(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+      procedure loginAdminByUsernameOrEmail(Req: THorseRequest; Res: THorseResponse; Next: TProc);
       procedure getAllAdminUsers(Req: THorseRequest; Res: THorseResponse; Next: TProc);
       procedure createUser(Req: THorseRequest; Res: THorseResponse; Next: TProc);
       procedure getUserById(Req: THorseRequest; Res: THorseResponse; Next: TProc);
@@ -36,47 +39,28 @@ type
       procedure getUserByWorkspace(Req: THorseRequest; Res: THorseResponse; Next: TProc);
       procedure updateUserByWorkspace(Req: THorseRequest; Res: THorseResponse; Next: TProc);
       procedure deleteUserByWorkspace(Req: THorseRequest; Res: THorseResponse; Next: TProc);
-      //
-      procedure getSecret(Req: THorseRequest; Res: THorseResponse; Next: TProc);
-      procedure createdSecret(Req: THorseRequest; Res: THorseResponse; Next: TProc);
-      procedure updateSecret(Req: THorseRequest; Res: THorseResponse; Next: TProc);
-      procedure deleteSecret(Req: THorseRequest; Res: THorseResponse; Next: TProc);
-      procedure getDashboard(Req: THorseRequest; Res: THorseResponse; Next: TProc);
-      procedure getLogDate(Req: THorseRequest; Res: THorseResponse; Next: TProc);
-      procedure getLogID(Req: THorseRequest; Res: THorseResponse; Next: TProc);
-      procedure getJWT(Req: THorseRequest; Res: THorseResponse; Next: TProc);
-      procedure cretedNFe(Req: THorseRequest; Res: THorseResponse; Next: TProc);
-      procedure disableNFe(Req: THorseRequest; Res: THorseResponse; Next: TProc);
-      procedure cancelNFe(Req: THorseRequest; Res: THorseResponse; Next: TProc);
-      procedure getXMLbyKey(Req: THorseRequest; Res: THorseResponse; Next: TProc);
-      procedure getPDFbyKey(Req: THorseRequest; Res: THorseResponse; Next: TProc);
-      procedure getAllIssuance(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+    {$ENDREGION}
+    {$REGION 'Client'}
+      procedure clientRegister(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+      procedure clientRegisterSendMailWelcome(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+      procedure clientRegisterSendMailRecovery(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+      procedure loginClientByUsername(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+      procedure loginClientByEmail(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+    {$ENDREGION}
       class function getInstance: TGatewayApiNFe;
       constructor Create(aController: TControllerApiNFe);
   end;
 
 implementation
 
+uses
+  apinfe.dto.config.jwt;
+
 { TAdapterApiNFeController }
-
-
-procedure TGatewayApiNFe.cancelNFe(Req: THorseRequest;
-  Res: THorseResponse; Next: TProc);
-begin
-
-end;
 
 constructor TGatewayApiNFe.Create(aController: TControllerApiNFe);
 begin
   FController := aController;
-  FController.GenerateJWTFunction := @TClaims.GenerateJWT;
-end;
-
-
-procedure TGatewayApiNFe.createdSecret(Req: THorseRequest;
-  Res: THorseResponse; Next: TProc);
-begin
-
 end;
 
 procedure TGatewayApiNFe.createUser(Req: THorseRequest;
@@ -127,19 +111,6 @@ begin
     on e: Exception do
       Res.SendBadRequest(e);
   end;
-end;
-
-procedure TGatewayApiNFe.cretedNFe(Req: THorseRequest;
-  Res: THorseResponse; Next: TProc);
-begin
-
-end;
-
-
-procedure TGatewayApiNFe.deleteSecret(Req: THorseRequest;
-  Res: THorseResponse; Next: TProc);
-begin
-
 end;
 
 procedure TGatewayApiNFe.deleteUser(Req: THorseRequest;
@@ -194,12 +165,6 @@ begin
 
 end;
 
-procedure TGatewayApiNFe.disableNFe(Req: THorseRequest;
-  Res: THorseResponse; Next: TProc);
-begin
-
-end;
-
 procedure TGatewayApiNFe.getAllAdminUsers(Req: THorseRequest;
   Res: THorseResponse; Next: TProc);
 begin
@@ -210,13 +175,6 @@ begin
       Res.SendBadRequest(e);
   end;
 end;
-
-procedure TGatewayApiNFe.getAllIssuance(Req: THorseRequest;
-  Res: THorseResponse; Next: TProc);
-begin
-
-end;
-
 
 procedure TGatewayApiNFe.getAllUsersByWorkspace(Req: THorseRequest;
   Res: THorseResponse; Next: TProc);
@@ -240,42 +198,6 @@ begin
     on e: Exception do
       Res.SendBadRequest(e);
   end;
-end;
-
-procedure TGatewayApiNFe.getDashboard(Req: THorseRequest;
-  Res: THorseResponse; Next: TProc);
-begin
-
-end;
-
-procedure TGatewayApiNFe.getJWT(Req: THorseRequest;
-  Res: THorseResponse; Next: TProc);
-begin
-
-end;
-
-procedure TGatewayApiNFe.getLogDate(Req: THorseRequest;
-  Res: THorseResponse; Next: TProc);
-begin
-
-end;
-
-procedure TGatewayApiNFe.getLogID(Req: THorseRequest;
-  Res: THorseResponse; Next: TProc);
-begin
-
-end;
-
-procedure TGatewayApiNFe.getPDFbyKey(Req: THorseRequest;
-  Res: THorseResponse; Next: TProc);
-begin
-
-end;
-
-procedure TGatewayApiNFe.getSecret(Req: THorseRequest;
-  Res: THorseResponse; Next: TProc);
-begin
-
 end;
 
 procedure TGatewayApiNFe.getUserById(Req: THorseRequest;
@@ -319,13 +241,22 @@ begin
   end;
 end;
 
-procedure TGatewayApiNFe.getXMLbyKey(Req: THorseRequest;
+procedure TGatewayApiNFe.loginAdminByEmail(Req: THorseRequest;
   Res: THorseResponse; Next: TProc);
+var jsoReq: TJSONValue;
+var email, password, jwt: string;
 begin
+  jsoReq   := Req.Body<TJSONObject> as TJSONObject;
+  email := jsoReq.GetValue<string>('email');
+  password := jsoReq.GetValue<string>('password');
+  jwt := Self.FController.ReturnJWTLoginAdminByEmail(email,password);
 
+  if (jwt='') then
+    Res.SendBadRequest('Usuário ou senha inválidos')
+  else
+    Res.SendSuccess('jwt', jwt);
 end;
-
-procedure TGatewayApiNFe.LoginAdmin(Req: THorseRequest;
+procedure TGatewayApiNFe.loginAdminByUsername(Req: THorseRequest;
   Res: THorseResponse; Next: TProc);
 var jsoReq: TJSONValue;
 var username, password, jwt: string;
@@ -333,7 +264,7 @@ begin
   jsoReq   := Req.Body<TJSONObject> as TJSONObject;
   username := jsoReq.GetValue<string>('username');
   password := jsoReq.GetValue<string>('password');
-  jwt := Self.FController.ReturnJWTLoginAdmin(username,password);
+  jwt := Self.FController.ReturnJWTLoginAdminByUsername(username,password);
 
   if (jwt='') then
     Res.SendBadRequest('Usuário ou senha inválidos')
@@ -341,10 +272,102 @@ begin
     Res.SendSuccess('jwt', jwt);
 end;
 
-procedure TGatewayApiNFe.updateSecret(Req: THorseRequest;
+procedure TGatewayApiNFe.loginAdminByUsernameOrEmail(Req: THorseRequest;
+  Res: THorseResponse; Next: TProc);
+var jsoReq: TJSONValue;
+var jsoDataResp, jsoUser: TJSONObject;
+var usernameOrEmail, password, jwt: string;
+
+begin
+  jsoDataResp  := nil;
+  jsoUser      := nil;
+  jsoReq   := Req.Body<TJSONObject> as TJSONObject;
+  usernameOrEmail  := jsoReq.GetValue<string>('id');
+  password := jsoReq.GetValue<string>('password');
+  jwt := Self.FController.ReturnJWTLoginAdminByUsername(usernameOrEmail,password);
+
+  if (jwt='') then begin
+    jwt     := Self.FController.ReturnJWTLoginAdminByEmail(usernameOrEmail,password);
+    if not (jwt=EmptyStr) then
+      jsoUser := Self.FController.getUserByEmail(usernameOrEmail);
+  end
+  else
+    jsoUser := Self.FController.getUserByLogin(usernameOrEmail);
+
+   if ((jwt=EmptyStr) or not Assigned(jsoUser)) then begin
+    Res.SendBadRequest('Usuário ou senha inválidos');
+    exit;
+  end;
+
+  jsoDataResp:= TJSONObject.Create;
+  jsoDataResp.AddPair('id', jsoUser.GetValue<string>('id'));
+  jsoDataResp.AddPair('name', jsoUser.GetValue<string>('name'));
+  jsoDataResp.AddPair('username', jsoUser.GetValue<string>('username'));
+  jsoDataResp.AddPair('email', jsoUser.GetValue<string>('email'));
+  jsoDataResp.AddPair('jwt', jwt);
+  jsoDataResp.AddPair('surname', '');
+  jsoDataResp.AddPair('position', '');
+  jsoDataResp.AddPair('src', '');
+  jsoDataResp.AddPair('srcSet', '');
+  jsoDataResp.AddPair('isOnline', True);
+  jsoDataResp.AddPair('color', 'primary');
+  jsoDataResp.AddPair('fullImage', '');
+  jsoDataResp.AddPair('services', TJSONArray.Create);
+  jsoDataResp.AddPair('password', '');
+  jsoDataResp.AddPair('isReply', false);
+  Res.SendSuccess(jsoDataResp);
+end;
+
+procedure TGatewayApiNFe.loginClientByEmail(Req: THorseRequest;
   Res: THorseResponse; Next: TProc);
 begin
 
+end;
+
+procedure TGatewayApiNFe.loginClientByUsername(Req: THorseRequest;
+  Res: THorseResponse; Next: TProc);
+begin
+
+end;
+
+procedure TGatewayApiNFe.clientRegister(Req: THorseRequest; Res: THorseResponse;
+  Next: TProc);
+var json: TJSONObject;  
+begin
+  try
+    json := Req.Body<TJSONObject> as TJSONObject;
+    Res.SendSuccess( Self.FController.clientRegister(json) );
+  except
+    on e: Exception do
+      Res.SendBadRequest(e);
+  end;
+end;
+
+procedure TGatewayApiNFe.clientRegisterSendMailRecovery(Req: THorseRequest;
+  Res: THorseResponse; Next: TProc);
+var email: string;
+begin
+  email := req.Params['email'];
+  try
+    Res.SendSuccess( Self.FController.clientRegisterSendMailRecovery(email) );
+  except
+    on e: Exception do
+      Res.SendBadRequest(e);
+  end;
+end;
+
+procedure TGatewayApiNFe.clientRegisterSendMailWelcome(Req: THorseRequest;
+  Res: THorseResponse; Next: TProc);
+var workspaceId, userId: string;
+begin
+  workspaceId := req.Params['workspaceid'];
+  userId := req.Params['userid'];
+  try
+    Res.SendSuccess( Self.FController.clientRegisterSendMailWelcome(workspaceId, userId) );
+  except
+    on e: Exception do
+      Res.SendBadRequest(e);
+  end;
 end;
 
 procedure TGatewayApiNFe.updateUser(Req: THorseRequest;

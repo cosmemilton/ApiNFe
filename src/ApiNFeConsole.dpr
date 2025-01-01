@@ -17,7 +17,6 @@ uses
   ThreadUtilities in 'utils\ThreadUtilities.pas',
   apinfe.adapter.mongo in 'components\apinfe.adapter.mongo.pas',
   apinfe.claims in 'utils\apinfe.claims.pas',
-  emissorfiscal.controller in 'controller\emissorfiscal.controller.pas',
   Grijjy.BinaryCoding in 'components\GrijjyFoundation\Grijjy.BinaryCoding.pas',
   Grijjy.Bson.IO in 'components\GrijjyFoundation\Grijjy.Bson.IO.pas',
   Grijjy.Bson in 'components\GrijjyFoundation\Grijjy.Bson.pas',
@@ -86,11 +85,19 @@ uses
   api.router.client in 'router\api.router.client.pas',
   emissorfiscal.gateway.tocontroller in 'gateway\emissorfiscal.gateway.tocontroller.pas',
   emissorfiscal.validate in 'utils\emissorfiscal.validate.pas',
-  emissorfiscal.email in 'utils\emissorfiscal.email.pas',
+  emissorfiscal.email.services in 'services\email\emissorfiscal.email.services.pas',
   apinfe.dto.config.emailserver in 'dto\apinfe.dto.config.emailserver.pas',
   emissorfiscal.helper.strings in 'utils\emissorfiscal.helper.strings.pas',
   emissorfiscal.types in 'types\emissorfiscal.types.pas',
-  apinfe.constants.errors in 'constants\apinfe.constants.errors.pas';
+  apinfe.constants.errors in 'constants\apinfe.constants.errors.pas',
+  emissorfiscal.dto.clientregister in 'dto\emissorfiscal.dto.clientregister.pas',
+  emissorfiscal.controller in 'controller\emissorfiscal.controller.pas',
+  emissorfiscal.dao.clientregister in 'dao\emissorfiscal.dao.clientregister.pas',
+  emissorfiscal.dao.sendmail in 'dao\emissorfiscal.dao.sendmail.pas',
+  emissorfiscal.email.services.class_ in 'services\email\emissorfiscal.email.services.class_.pas',
+  emissorfiscal.email.services.template in 'services\email\emissorfiscal.email.services.template.pas',
+  apinfe.dto.config.server in 'dto\apinfe.dto.config.server.pas',
+  apinfe.dto.config.log in 'dto\apinfe.dto.config.log.pas';
 
 procedure Console(cmd: String);
 begin

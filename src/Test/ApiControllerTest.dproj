@@ -88,7 +88,7 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="uApiControllerTest.pas"/>
-        <DCCReference Include="..\controller\emissorfiscal.controller.pas"/>
+        <DCCReference Include="..\dao\emissorfiscal.dao.clientregister.pas"/>
         <DCCReference Include="..\controller\emissorfiscal.controller.base.pas"/>
         <DCCReference Include="..\utils\ThreadFileLog.pas"/>
         <DCCReference Include="..\utils\ThreadUtilities.pas"/>

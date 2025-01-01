@@ -171,6 +171,8 @@ type
     property Length: Integer read GetLength;
     //Custom
     function IsGUID: Boolean; overload;
+    function mailWithMask: string;
+    function IsValidEmail: Boolean;
   end;
 
 
@@ -730,6 +732,11 @@ end;
 class function TCustomStringHelper.IsNullOrWhiteSpace(const Value: string): Boolean;
 begin
   Result := Value.Trim.Length = 0;
+end;
+
+function TCustomStringHelper.IsValidEmail: Boolean;
+begin
+  Result := TRegEx.IsMatch(Self, '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
 end;
 
 class function TCustomStringHelper.Join(const Separator: string; const Values: array of string): string;
@@ -1625,6 +1632,13 @@ end;
 function TCustomStringHelper.TrimStart(const TrimChars: array of Char): string;
 begin
   Result := Self.TrimLeft(TrimChars);
+end;
+
+function TCustomStringHelper.mailWithMask: string;
+begin
+  Result := Self;
+  if Result.IsValidEmail then
+    Result := System.Copy(Result, 1, 3) + '*****' + System.Copy(Result, System.POS('@', Result) - 1, System.Length(Result));
 end;
 
 

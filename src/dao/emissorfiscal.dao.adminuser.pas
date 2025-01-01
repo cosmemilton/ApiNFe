@@ -19,10 +19,13 @@ type
   public
     function GetAllAdminUsers: TObjectList<TAdminUserDTO>;
     function CreateAdminUser(const aAdminUser: TAdminUserDTO): Boolean;
-    function ValidateUser(const Username, Password: string): Boolean;
-    function getUserByLogin(const Username, Password: string): TAdminUserDTO; overload;
-    function getUserByLogin(const aLogin: string): TAdminUserDTO; overload;
+    function ValidateUserByUsername(const aUsername, aPassword: string): Boolean;
+    function ValidateUserByEmail(const aEmail, aPassword: string): Boolean;
+    function getUserByLoginByUsername(const aUsername, aPassword: string): TAdminUserDTO; overload;
+    function getUserByLoginByUsername(const aLogin: string): TAdminUserDTO; overload;
+    function getUserByLoginByEmail(const aEmail, aPassword: string): TAdminUserDTO;
     function getUserById(const aId: string): TAdminUserDTO;
+    function getUserByEmail(const aEmail: string): TAdminUserDTO;
     function deleteAdminUser(const aId: string): Integer;
     function UpdateAdminUser(const aIdUserResp: string; const aAdminUser: TAdminUserDTO): Integer;
 
@@ -89,7 +92,8 @@ begin
   end;
 end;
 
-function TAdminUserDAO.ValidateUser(const Username, Password: string): Boolean;
+function TAdminUserDAO.ValidateUserByEmail(const aEmail,
+  aPassword: string): Boolean;
 var adminUserDTO: TAdminUserDTO;
 var fdQuery: TFDQuery;
 var param: TDictionary<string, variant>;
@@ -98,8 +102,29 @@ begin
   fdQuery:=TFDQuery.CreateAndConnect(Self.Connection);
   adminUserDTO:= TAdminUserDTO.Create;
   try
-    param.Add('username', Username);
-    param.Add('password_hash', Password);
+    param.Add('email', aEmail);
+    param.Add('password_hash', aPassword);
+    fdQuery.SQL.Add(adminUserDTO.BuildSelect<TAdminUserDTO>(param));
+    fdQuery.Open();
+    Result:= not fdQuery.IsEmpty;
+  finally
+    FreeAndNil(param);
+    FreeAndNil(fdQuery);
+    FreeAndNil(adminUserDTO);
+  end;
+end;
+
+function TAdminUserDAO.ValidateUserByUsername(const aUsername, aPassword: string): Boolean;
+var adminUserDTO: TAdminUserDTO;
+var fdQuery: TFDQuery;
+var param: TDictionary<string, variant>;
+begin
+  param:= TDictionary<string, variant>.Create;
+  fdQuery:=TFDQuery.CreateAndConnect(Self.Connection);
+  adminUserDTO:= TAdminUserDTO.Create;
+  try
+    param.Add('username', aUsername);
+    param.Add('password_hash', aPassword);
     fdQuery.SQL.Add(adminUserDTO.BuildSelect<TAdminUserDTO>(param));
     fdQuery.Open();
     Result:= not fdQuery.IsEmpty;
@@ -124,6 +149,33 @@ begin
     );
   
   Result := m_instance;  
+end;
+
+function TAdminUserDAO.getUserByEmail(const aEmail: string): TAdminUserDTO;
+var adminUserDTO: TAdminUserDTO;
+var fdQuery: TFDQuery;
+begin
+  Result:= TAdminUserDTO.Create;
+  Result.Master:= False;
+  fdQuery:=TFDQuery.CreateAndConnect(Self.Connection);
+  try
+    fdQuery.SQL.Add('SELECT id::varchar, name, username, email, password_hash, master, created_at, updated_at, created_by::varchar, updated_by::varchar ');
+    fdQuery.SQL.Add(' FROM admin_users WHERE email = :email');
+    fdQuery.ParamByName('email').AsString:= aEmail;
+    fdQuery.Open();
+    with Result do begin
+      id:= fdQuery.FieldByName('id').AsString;
+      name:= fdQuery.FieldByName('name').AsString;
+      username:= fdQuery.FieldByName('username').AsString;
+      email:= fdQuery.FieldByName('email').AsString;
+      passwordHash:= EmptyStr;
+      master:= fdQuery.FieldByName('master').AsBoolean;
+      createdAt:= fdQuery.FieldByName('created_at').AsDateTime;
+      updatedAt:= fdQuery.FieldByName('updated_at').AsDateTime;
+    end;
+  finally
+    FreeAndNil(fdQuery);
+  end;
 end;
 
 function TAdminUserDAO.getUserById(const aId: string): TAdminUserDTO;
@@ -153,7 +205,7 @@ begin
   end;
 end;
 
-function TAdminUserDAO.getUserByLogin(const aLogin: string): TAdminUserDTO;
+function TAdminUserDAO.getUserByLoginByUsername(const aLogin: string): TAdminUserDTO;
 var fdQuery: TFDQuery;
 begin
   Result:= nil;
@@ -190,8 +242,8 @@ begin
   end;
 end;
 
-function TAdminUserDAO.getUserByLogin(const Username,
-  Password: string): TAdminUserDTO;
+function TAdminUserDAO.getUserByLoginByUsername(const aUsername,
+  aPassword: string): TAdminUserDTO;
 var fdQuery: TFDQuery;
 begin
   Result:= TAdminUserDTO.Create;
@@ -199,8 +251,35 @@ begin
   try
     fdQuery.SQL.Add('SELECT id::varchar, name, username, email, password_hash, master, created_at, updated_at, created_by::varchar, updated_by::varchar ');
     fdQuery.SQL.Add(' FROM admin_users WHERE username = :username AND password_hash = crypt(:password_hash , ''md5'')');
-    fdQuery.ParamByName('username').AsString        :=  Username;
-    fdQuery.ParamByName('password_hash').AsString   :=  Password;
+    fdQuery.ParamByName('username').AsString        :=  aUsername;
+    fdQuery.ParamByName('password_hash').AsString   :=  aPassword;
+    fdQuery.Open();
+    with Result do begin
+      id:= fdQuery.FieldByName('id').AsString;
+      name:= fdQuery.FieldByName('name').AsString;
+      username:= fdQuery.FieldByName('username').AsString;
+      email:= fdQuery.FieldByName('email').AsString;
+      passwordHash:= EmptyStr;
+      master:= fdQuery.FieldByName('master').AsBoolean;
+      createdAt:= fdQuery.FieldByName('created_at').AsDateTime;
+      updatedAt:= fdQuery.FieldByName('updated_at').AsDateTime;
+    end;
+  finally
+    FreeAndNil(fdQuery);
+  end;
+end;
+
+function TAdminUserDAO.getUserByLoginByEmail(const aEmail,
+  aPassword: string): TAdminUserDTO;
+var fdQuery: TFDQuery;
+begin
+  Result:= TAdminUserDTO.Create;
+  fdQuery:=TFDQuery.CreateAndConnect(Self.Connection);
+  try
+    fdQuery.SQL.Add('SELECT id::varchar, name, username, email, password_hash, master, created_at, updated_at, created_by::varchar, updated_by::varchar ');
+    fdQuery.SQL.Add(' FROM admin_users WHERE email = :email AND password_hash = crypt(:password_hash , ''md5'')');
+    fdQuery.ParamByName('email').AsString         :=  aEmail;
+    fdQuery.ParamByName('password_hash').AsString :=  aPassword;
     fdQuery.Open();
     with Result do begin
       id:= fdQuery.FieldByName('id').AsString;

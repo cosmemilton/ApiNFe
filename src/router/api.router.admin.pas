@@ -58,7 +58,9 @@ begin
   THorse
     .Group
       .Prefix(apiBaseAdmin)
-      .Post('/login'      , TGatewayApiNFe.getInstance.LoginAdmin )
+      {$REGION 'Auth'}
+      .Post('/auth/login'      , TGatewayApiNFe.getInstance.loginAdminByUsernameOrEmail )
+      {$ENDREGION}
       {$REGION 'Admin Users'}
       .Prefix(apiBaseAdmin)
       .AddCallback( AuthenticatedAdmin() )

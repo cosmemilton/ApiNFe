@@ -41,7 +41,7 @@ begin
       TJSONObject
         .Create
           .AddPair('result', TJSONBool.Create(False))
-          .AddPair('erro', trim(AMessage))
+          .AddPair('error', trim(AMessage))
     );
 
 end;
@@ -54,22 +54,20 @@ begin
       TJSONObject
         .Create
           .AddPair('result', TJSONBool.Create(False))
-          .AddPair('erro', trim(aError.Message))
+          .AddPair('error', trim(aError.Message))
     );
 end;
 
 procedure THorseResponseHelper.SendForbidden(const AMessage: string);
-var
-  LJSON: TJSONObject;
 begin
-  LJSON := TJSONObject.Create;
-  try
-    LJSON.AddPair('error', AMessage);
-    Self.Status(403);
-    Self.Send<TJSONObject>(LJSON);
-  finally
-    FreeAndNil( LJSON );
-  end;
+  Self
+    .Status(403)
+    .Send<TJSONObject>(
+      TJSONObject
+        .Create
+          .AddPair('result', TJSONBool.Create(False))
+          .AddPair('error', trim(AMessage))
+    );
 end;
 
 procedure THorseResponseHelper.SendInternalServerError(const AMessage: string);

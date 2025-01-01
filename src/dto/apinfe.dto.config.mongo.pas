@@ -2,39 +2,58 @@ unit apinfe.dto.config.mongo;
 
 interface
 
+uses
+  System.Classes, System.IniFiles,
+  apinfe.constants;
+
 type
   TConfigMongoDB= class
     strict private
       FPathDB: string;
       FNameDB: string;
       FUseMongo: Boolean;
+    protected
+      class var m_instance: TConfigMongoDB;
     public
-      procedure SetPathDB(const Value: string);
-      procedure SetNameDB(const Value: string);
-      procedure SetUseMongo(const Value: Boolean);
       property PathDB: string read FPathDB;
       property NameDB: string read FNameDB;
       property UseMongo: Boolean read FUseMongo;
+      class function getInstance: TConfigMongoDB;
+      constructor Create;
     end;
 
 implementation
 
+uses
+  System.SysUtils;
+
 { TConfigMongoDB }
 
-procedure TConfigMongoDB.SetNameDB(const Value: string);
+constructor TConfigMongoDB.Create;
+var ini: TIniFile;
 begin
-Self.FNameDB := Value;
+  inherited;
+  ini:= nil;
+  ForceDirectories(path);
+  ForceDirectories(pathLog);
+  ForceDirectories(pathPDF);
+  try
+    ini:= Tinifile.Create(iniFileNameConfigDB);
+    FPathDB := ini.ReadString('MongoDB','PathDB', '');
+    FNameDB := ini.ReadString('MongoDB','NameDB', '');
+    FUseMongo:= ini.ReadBool('MongoDB','UseMongo', False);
+  finally
+    if Assigned(ini) then
+      FreeAndNil(ini);
+  end;
 end;
 
-procedure TConfigMongoDB.SetPathDB(const Value: string);
+class function TConfigMongoDB.getInstance: TConfigMongoDB;
 begin
-  Self.FPathDB := Value;
-end;
+  if not Assigned(m_instance) then
+    m_instance := TConfigMongoDB.Create;
 
-procedure TConfigMongoDB.SetUseMongo(const Value: Boolean);
-begin
-  Self.FUseMongo := Value;
+  Result := m_instance;
 end;
-
 
 end.

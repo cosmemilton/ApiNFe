@@ -24,7 +24,7 @@ type
     property name: string read GetName write SetName;
     property Email: string read GetEmail write SetEmail;
     property admin: Boolean read GetAdmin write SetAdmin;
-    class function GenerateJWT(const aId, aName, aEmail: string; const aAdmin: Boolean): string;
+    class function GenerateJWT(const aId: string; aName: string; aEmail: string; const aAdmin: Boolean): string;
     class function ValidateJWT(const aToken: string): Boolean;
     class function GetClaims(const aToken: string): TClaims;
   end;
@@ -36,7 +36,7 @@ uses
 
 { TMyClaims }
 
-class function TClaims.GenerateJWT(const aId, aName, aEmail: string; const aAdmin: Boolean): string;
+class function TClaims.GenerateJWT(const aId: string; aName: string; aEmail: string; const aAdmin: Boolean): string;
 var
     LJWT: TJWT;
     LClaims: TClaims;
@@ -117,11 +117,16 @@ begin
 end;
 
 class function TClaims.GetClaims(const aToken: string): TClaims;
-var
-  LJWT: TJWT;
+  var
+    LJWT: TJWT;
 begin
-//
+  LJWT := TJOSE.Verify(TJWTConfigDTO.getInstance.PrivateKey, aToken);
+  if LJWT.Verified then
+    Result := TClaims(LJWT.Claims)
+  else
+    Result := nil;
 end;
+
 
 
 

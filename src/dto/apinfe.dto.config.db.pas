@@ -2,6 +2,10 @@ unit apinfe.dto.config.db;
 
 interface
 
+uses
+  System.Classes, System.IniFiles,
+  System.SysUtils;
+
 type
   TDBConfig = class
   strict private
@@ -13,46 +17,59 @@ type
   protected
     class var m_instance: TDBConfig;
   public
-    procedure SetHostName(const Value: string);
-    procedure SetPassword(const Value: string);
-    procedure SetPort(const Value: Word);
-    procedure SetUserName(const Value: string);
-    procedure SetDatabase(const Value: string);
     property DataBase: string read FDataBase;
     property HostName: string read FHostName;
     property UserName: string read FUserName;
     property Password: string read FPassword;
     property Port: Word read FPort;
     class function getInstance: TDBConfig;
+    constructor Create();
   end;
 
 implementation
 
+uses
+  apinfe.constants, apinfe.constants.errors;
+
 { TDBConfig }
 
-procedure TDBConfig.SetHostName(const Value: string);
+constructor TDBConfig.Create();
+var ini: TIniFile;
 begin
-  FHostName := Value;
-end;
+  inherited;
+  ForceDirectories(path);
+  ForceDirectories(pathLog);
+  ForceDirectories(pathPDF);
+  try
+    ini:= Tinifile.Create(iniFileNameConfigDB);
+    if not FileExists(iniFileNameConfigDB) then begin
+      ini.writeString('DB','hostname', '');
+      ini.writeString('DB','username', '');
+      ini.writeString('DB','password', '');
+      ini.writeInteger('DB','port', 0);
+      ini.writeString('DB','database', '');
+    end;
 
-procedure TDBConfig.SetPassword(const Value: string);
-begin
-  FPassword := Value;
-end;
+    FHostName := ini.ReadString('DB','hostname', '');
+    FUserName := ini.ReadString('DB','username', '');
+    FPassword := ini.ReadString('DB','password', '');
+    FPort     := ini.ReadInteger('DB','port', 0);
+    FDatabase := ini.ReadString('DB','database', '');
 
-procedure TDBConfig.SetPort(const Value: Word);
-begin
-  FPort := Value;
-end;
+    if (FHostName=emptyStr) then
+      raise Exception.Create(ERROR_HOSTNAME_NOT_FOUND);
+    if (FUserName=emptyStr) then
+      raise Exception.Create(ERROR_USERNAME_NOT_FOUND);
+    if (FPassword=emptyStr) then
+      raise Exception.Create(ERROR_PASSWORD_NOT_FOUND);
+    if (FDatabase=emptyStr) then
+      raise Exception.Create(ERROR_DATABASE_NOT_FOUND);
+    if (FPort=0) then
+      raise Exception.Create(ERROR_PORT_NOT_FOUND);
 
-procedure TDBConfig.SetUserName(const Value: string);
-begin
-  FUserName := Value;
-end;
-
-procedure TDBConfig.SetDatabase(const Value: string);
-begin
-  FDatabase := Value;
+  finally
+    FreeAndNil(ini);
+  end;
 end;
 
 class function TDBConfig.getInstance: TDBConfig;

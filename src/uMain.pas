@@ -51,7 +51,7 @@ var
 implementation
 
 uses
-   apinfe.constants, apinfe.dto.config.jwt;
+   apinfe.constants, apinfe.dto.config.jwt, apinfe.dto.config.server;
 
 { TAPI }
 
@@ -97,7 +97,7 @@ end;
 procedure TApi.Listen(CallBack: TConsole);
 begin
   CallBack('Escutando na porta 9000');
-  THorse.Listen(9000);
+  THorse.Listen(TConfigServer.getInstance.Port);
 end;
 
 procedure TApi.Log(CallBack: THorseCallback);

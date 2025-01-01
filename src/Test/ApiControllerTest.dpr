@@ -15,7 +15,7 @@ uses
   {$ENDIF }
   DUnitX.TestFramework,
   uApiControllerTest in 'uApiControllerTest.pas',
-  emissorfiscal.controller in '..\controller\emissorfiscal.controller.pas',
+  emissorfiscal.dao.clientregister in '..\dao\emissorfiscal.dao.clientregister.pas',
   emissorfiscal.controller.base in '..\controller\emissorfiscal.controller.base.pas',
   ThreadFileLog in '..\utils\ThreadFileLog.pas',
   ThreadUtilities in '..\utils\ThreadUtilities.pas',

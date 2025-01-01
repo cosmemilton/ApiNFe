@@ -6,7 +6,7 @@
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
-        <TargetedPlatforms>1</TargetedPlatforms>
+        <TargetedPlatforms>3</TargetedPlatforms>
         <AppType>Console</AppType>
         <MainSource>ApiNFeConsole.dpr</MainSource>
     </PropertyGroup>
@@ -79,6 +79,9 @@
         <DCC_ConsoleTarget>true</DCC_ConsoleTarget>
         <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
+        <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
+        <BT_BuildType>Debug</BT_BuildType>
+        <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -120,7 +123,6 @@
         <DCCReference Include="utils\ThreadUtilities.pas"/>
         <DCCReference Include="components\apinfe.adapter.mongo.pas"/>
         <DCCReference Include="utils\apinfe.claims.pas"/>
-        <DCCReference Include="controller\emissorfiscal.controller.pas"/>
         <DCCReference Include="components\GrijjyFoundation\Grijjy.BinaryCoding.pas"/>
         <DCCReference Include="components\GrijjyFoundation\Grijjy.Bson.IO.pas"/>
         <DCCReference Include="components\GrijjyFoundation\Grijjy.Bson.pas"/>
@@ -189,11 +191,19 @@
         <DCCReference Include="router\api.router.client.pas"/>
         <DCCReference Include="gateway\emissorfiscal.gateway.tocontroller.pas"/>
         <DCCReference Include="utils\emissorfiscal.validate.pas"/>
-        <DCCReference Include="utils\emissorfiscal.email.pas"/>
+        <DCCReference Include="services\email\emissorfiscal.email.services.pas"/>
         <DCCReference Include="dto\apinfe.dto.config.emailserver.pas"/>
         <DCCReference Include="utils\emissorfiscal.helper.strings.pas"/>
         <DCCReference Include="types\emissorfiscal.types.pas"/>
         <DCCReference Include="constants\apinfe.constants.errors.pas"/>
+        <DCCReference Include="dto\emissorfiscal.dto.clientregister.pas"/>
+        <DCCReference Include="controller\emissorfiscal.controller.pas"/>
+        <DCCReference Include="dao\emissorfiscal.dao.clientregister.pas"/>
+        <DCCReference Include="dao\emissorfiscal.dao.sendmail.pas"/>
+        <DCCReference Include="services\email\emissorfiscal.email.services.class_.pas"/>
+        <DCCReference Include="services\email\emissorfiscal.email.services.template.pas"/>
+        <DCCReference Include="dto\apinfe.dto.config.server.pas"/>
+        <DCCReference Include="dto\apinfe.dto.config.log.pas"/>
         <None Include="components\GrijjyFoundation\Grijjy.inc"/>
         <None Include="components\GrijjyMongoDB\Grijjy.inc"/>
         <BuildConfiguration Include="Base">
@@ -1210,7 +1220,7 @@
             </Deployment>
             <Platforms>
                 <Platform value="Win32">True</Platform>
-                <Platform value="Win64">False</Platform>
+                <Platform value="Win64">True</Platform>
             </Platforms>
             <UnitTesting>
                 <TestProjectName>C:\MeusProjetos\delphi\ApiNFe\src\Test\ApiNFeConsoleTests.dproj</TestProjectName>

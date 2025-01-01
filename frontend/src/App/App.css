@@ -1,0 +1,10 @@
+
+.app.fullscreen {
+
+    background-color: var(--bs-body-bg);
+
+    z-index: 1;
+
+    overflow: scroll;
+
+}

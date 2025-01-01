@@ -11,6 +11,7 @@ const
   apiBase           = '/api/v1';
   apiBaseV2         = '/api/v2';
   apiBaseAdmin      = apiBase + '/admin';
+  apiBaseClient     = apiBase + '/client';
   path              = 'C:\SERVICES\ApiNfe\';
   pathNFeBase       = path + 'NFe\';
   pathNFeBaseXML    = pathNFeBase + 'XMLs\';
@@ -20,11 +21,16 @@ const
   pathLog           = path + 'Log\';
   pathPDF           = path + 'PDF\';
   error             = 'internal error';
-  iniFileName       = path + 'ApiNfe.ini';
+  iniFileNameConfigDB        = path + 'ApiNfeConfigDB.ini';
+  iniFileNameConfigLog       = path + 'ApiNfeConfigLog.ini';
+  iniFileNameConfigLogDb     = path + 'ApiNfeConfigLogDb.ini';
+  iniFileNameConfigToken     = path + 'ApiNfeConfigToken.ini';
+  iniFileNameConfigServer    = path + 'ApiNfeConfigServer.ini';
+  iniFileNameConfigMailServer= path + 'ApiNfeConfigMailServer.ini';
   localhost         = 'localhost';
   pathSchemasBase   = pathNFeBase + 'schemas\';
   versaoServ        = 'API_NFe 1.00';
-  PathPrivateKey    = path + 'privateKey.md5';
+
   GUID_NULL = '00000000-0000-0000-0000-000000000000';
 
   {$REGION 'Responsavel Tecnico (Fake - https://www.4devs.com.br/gerador_de_cpf)'}

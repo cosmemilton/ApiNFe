@@ -3,7 +3,7 @@ unit apinfe.dto.config.emailserver;
 interface
 
 uses
-  System.SysUtils, System.Classes;
+  System.SysUtils, System.Classes, System.IniFiles;
 
 type
   TEmailServerDTO = class
@@ -22,47 +22,56 @@ type
     property Password: string read FPassword;
     property UseTLS: Boolean read FUseTLS;
     class function getInstance: TEmailServerDTO;
-    procedure setHost(const Value: string);
-    procedure setPort(const Value: Integer);
-    procedure setUsername(const Value: string);
-    procedure setPassword(const Value: string);
-    procedure setUseTLS(const Value: Boolean);
+    constructor Create();
   end;
 
 implementation
 
+uses
+  apinfe.constants, apinfe.constants.errors;
+
 { TEmailServerDTO }
+
+constructor TEmailServerDTO.Create;
+var ini: TIniFile;
+begin
+  inherited;
+  ForceDirectories(path);
+  ForceDirectories(pathLog);
+  ForceDirectories(pathPDF);
+  try
+    ini:= Tinifile.Create(iniFileNameConfigMailServer);
+    if not FileExists(iniFileNameConfigMailServer) then begin
+      ini.writeString('EMail','Host', '');
+      ini.writeInteger('EMail','Port', 0);
+      ini.writeString('EMail','Username', '');
+      ini.writeString('EMail','Password', '');
+      ini.writeBool('EMail','UseTLS', False);
+    end;
+    FHost    := ini.ReadString('EMail','Host', '');
+    FPort    := ini.ReadInteger('EMail','Port', 0);
+    FUsername:= ini.ReadString('EMail','Username', '');
+    FPassword:= ini.ReadString('EMail','Password', '');
+    FUseTLS  := ini.ReadBool('EMail','UseTLS'  , False);
+    if (FHost=emptyStr) then
+      raise Exception.Create(ERROR_HOSTNAME_NOT_FOUND);
+    if (FUsername=emptyStr) then
+      raise Exception.Create(ERROR_USERNAME_NOT_FOUND);
+    if (FPassword=emptyStr) then
+      raise Exception.Create(ERROR_PASSWORD_NOT_FOUND);
+    if (FPort=0) then
+      raise Exception.Create(ERROR_PORT_NOT_FOUND);
+  finally
+    FreeAndNil(ini);
+  end;
+
+end;
 
 class function TEmailServerDTO.getInstance: TEmailServerDTO;
 begin
   if not Assigned(m_instance) then
     m_instance := TEmailServerDTO.Create;
   Result := m_instance;
-end;
-
-procedure TEmailServerDTO.setHost(const Value: string);
-begin
-  Self.FHost := Value;
-end;
-
-procedure TEmailServerDTO.setPassword(const Value: string);
-begin
-  Self.FPassword := Value;
-end;
-
-procedure TEmailServerDTO.setPort(const Value: Integer);
-begin
-  Self.FPort := Value;
-end;
-
-procedure TEmailServerDTO.setUsername(const Value: string);
-begin
-  Self.FUsername := Value;
-end;
-
-procedure TEmailServerDTO.setUseTLS(const Value: Boolean);
-begin
-  Self.FUseTLS := Value;
 end;
 
 end.

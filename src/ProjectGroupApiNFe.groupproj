@@ -6,6 +6,9 @@
         <Projects Include="ApiNFeConsole.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="ApiNFeIsapi.dproj">
+            <Dependencies/>
+        </Projects>
         <Projects Include="Test\ApiControllerTest.dproj">
             <Dependencies/>
         </Projects>
@@ -26,6 +29,15 @@
     <Target Name="ApiNFeConsole:Make">
         <MSBuild Projects="ApiNFeConsole.dproj" Targets="Make"/>
     </Target>
+    <Target Name="ApiNFeIsapi">
+        <MSBuild Projects="ApiNFeIsapi.dproj"/>
+    </Target>
+    <Target Name="ApiNFeIsapi:Clean">
+        <MSBuild Projects="ApiNFeIsapi.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ApiNFeIsapi:Make">
+        <MSBuild Projects="ApiNFeIsapi.dproj" Targets="Make"/>
+    </Target>
     <Target Name="ApiControllerTest">
         <MSBuild Projects="Test\ApiControllerTest.dproj"/>
     </Target>
@@ -36,13 +48,13 @@
         <MSBuild Projects="Test\ApiControllerTest.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="ApiNFeConsole;ApiControllerTest"/>
+        <CallTarget Targets="ApiNFeConsole;ApiNFeIsapi;ApiControllerTest"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="ApiNFeConsole:Clean;ApiControllerTest:Clean"/>
+        <CallTarget Targets="ApiNFeConsole:Clean;ApiNFeIsapi:Clean;ApiControllerTest:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="ApiNFeConsole:Make;ApiControllerTest:Make"/>
+        <CallTarget Targets="ApiNFeConsole:Make;ApiNFeIsapi:Make;ApiControllerTest:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

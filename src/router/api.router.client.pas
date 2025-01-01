@@ -57,21 +57,12 @@ procedure TApiRouterClient.Register;
 begin
 THorse
     .Group
-      .Prefix(apiBase)
-      .AddCallback( AuthenticatedClient() )
-      .Post('/getJWT'        ,  TGatewayApiNFe.getInstance.getJWT)
-      .AddCallback( AuthenticatedClient() )
-      .Post('/send'          ,  TGatewayApiNFe.getInstance.cretedNFe)
-      .AddCallback( AuthenticatedClient() )
-      .Post('/disable'       ,  TGatewayApiNFe.getInstance.disableNFe)
-      .AddCallback( AuthenticatedClient() )
-      .Post('/cancel'        ,  TGatewayApiNFe.getInstance.cancelNFe)
-      .AddCallback( AuthenticatedClient() )
-      .Get('/xml/:chave'     ,  TGatewayApiNFe.getInstance.getXMLbyKey)
-      .AddCallback( AuthenticatedClient() )
-      .Get('/danfe/:chave'   ,  TGatewayApiNFe.getInstance.getPDFbyKey)
-      .AddCallback( AuthenticatedClient() )
-      .Get('/getAll'         ,  TGatewayApiNFe.getInstance.getAllIssuance);
+      .Prefix(apiBaseClient)
+      .Post('/register'   ,  TGatewayApiNFe.getInstance.clientRegister)
+      .Post('/register/sendmail/welcome/:workspaceid/:userid', TGatewayApiNFe.getInstance.clientRegisterSendMailWelcome)
+      .Post('/register/sendmail/recovery/:email', TGatewayApiNFe.getInstance.clientRegisterSendMailRecovery)
+      .Post('/login'      ,  TGatewayApiNFe.getInstance.loginClientByUsername)
+      .Post('/login/email',  TGatewayApiNFe.getInstance.loginClientByEmail);
 end;
 
 end.

@@ -4,7 +4,7 @@ interface
 
 
 uses
-  System.Classes, apinfe.constants, apinfe.constants.errors;
+  System.Classes, System.SysUtils, System.IniFiles;
 
 type
   TJWTConfigDTO = class
@@ -14,7 +14,6 @@ type
   protected
     class var m_instance: TJWTConfigDTO;
   public
-    procedure SetExpirationTime(const Value: integer);
     property ExpirationTime: Integer read FExpirationTime;
     property PrivateKey: string read FPrivateKey;
     class function getInstance: TJWTConfigDTO;
@@ -24,37 +23,40 @@ type
 implementation
 
 uses
-  System.SysUtils;
-
+  apinfe.constants, apinfe.constants.errors;
 
 { TDBConfig }
 
 constructor TJWTConfigDTO.Create;
 var
-  tKeyMD5: TStringList;
+  ini: TIniFile;
 begin
+inherited;
+ini:= nil;
   try
-    if FileExists(PathPrivateKey) then
-      begin
-        tKeyMD5:= TStringList.Create;
-        tKeyMD5.LoadFromFile(PathPrivateKey);
-        FPrivateKey:= tKeyMD5.Text.Trim;
-      end
-    else
+    ForceDirectories(path);
+    ForceDirectories(pathLog);
+    ForceDirectories(pathPDF);
+    ini:= Tinifile.Create(iniFileNameConfigToken);
+    if not FileExists(iniFileNameConfigToken) then begin
+      ini.writeString('Token','TempoDeVidaEmMinutos', '5');
+      ini.writeString('Token','PathDB', '');
+    end;
+
+    FExpirationTime:= ini.ReadInteger('Token','TempoDeVidaEmMinutos', 5);
+    FPrivateKey    := ini.ReadString('Token','PathDB', EmptyStr);
+
+    if (FPrivateKey=EmptyStr) then
       raise Exception.Create(ERROR_PRIVATE_KEY_NOT_IMPLEMENTED);
       
     if not (FPrivateKey.Length=32) then
       raise Exception.Create(ERROR_INVALID_PRIVATE_KEY);
   finally
-    if Assigned(tKeyMD5) then
-      FreeAndNil(tKeyMD5);
+    if Assigned(ini) then
+      FreeAndNil(ini);
   end;
 end;
 
-procedure TJWTConfigDTO.SetExpirationTime(const Value: integer);
-begin
-  FExpirationTime := Value;
-end;
 
 class function TJWTConfigDTO.getInstance: TJWTConfigDTO;
 begin

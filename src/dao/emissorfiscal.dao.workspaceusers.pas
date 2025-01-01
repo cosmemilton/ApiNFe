@@ -22,6 +22,8 @@ type
     function CreateWorkspaceUser(aWorkspaceID: string; const aValue: TWorkspaceUserDTO): Boolean;
     function GetWorkspaceUserById(aWorkspaceID: string; const aId: string): TWorkspaceUserDTO;
     function GetAllWorkspaceUsers(aWorkspaceID: string): TObjectList<TWorkspaceUserDTO>;
+    function GetWorkspaceUserByRegister(aWorkspaceID: string; const aUserID: string): TWorkspaceUserDTO;
+    function GetWorkspaceUserByEmail(const aEmail: string): TWorkspaceUserDTO;
     function UpdateWorkspaceUserById(aWorkspaceID: string; const reqUserID: string; const aId: string; const aDTO: TWorkspaceUserDTO): Integer;
     function DeleteWorkspaceUserById(aWorkspaceID: string; const aId: string): Integer;
     class function getInstance: TworkspaceUserDAO;
@@ -148,6 +150,54 @@ begin
 
 end;
 
+function TworkspaceUserDAO.GetWorkspaceUserByRegister(aWorkspaceID: string;
+  const aUserID: string): TWorkspaceUserDTO;
+var qry: TFDQuery;
+begin
+  Result := nil;
+  qry := TFDQuery.Create(nil);
+  try
+    qry.Connection := Connection;
+    qry.SQL.Add('SELECT id::varchar');
+    qry.SQL.Add(', workspace_id::varchar');
+    qry.SQL.Add(', nome');
+    qry.SQL.Add(', login');
+    qry.SQL.Add(', ativo');
+    qry.SQL.Add(', email');
+    qry.SQL.Add(', telefone');
+    qry.SQL.Add(', celular');
+    qry.SQL.Add(', created_by::varchar');
+    qry.SQL.Add(', updated_by::varchar');
+    qry.SQL.Add(', created_at');
+    qry.SQL.Add(', updated_at');
+    qry.SQL.Add('FROM workspace_users');
+    qry.SQL.Add('WHERE id = :id::uuid');
+    qry.SQL.Add('AND workspace_id = :workspace_id::uuid');
+    qry.ParamByName('id').AsString := aUserID;
+    qry.ParamByName('workspace_id').AsString := aWorkspaceID;
+    qry.Open;
+    if not qry.IsEmpty then begin      
+      Result := TWorkspaceUserDTO.Create;
+      Result.Id := qry.FieldByName('id').AsString;
+      Result.WorkspaceId := qry.FieldByName('workspace_id').AsString;
+      Result.Nome := qry.FieldByName('nome').AsString;
+      Result.Login := qry.FieldByName('login').AsString;
+      Result.Ativo := qry.FieldByName('ativo').AsBoolean;
+      Result.Email := qry.FieldByName('email').AsString;
+      Result.Telefone := qry.FieldByName('telefone').AsString;
+      Result.Celular := qry.FieldByName('celular').AsString;
+      Result.CreatedBy := qry.FieldByName('created_by').AsString;
+      Result.UpdatedBy := qry.FieldByName('updated_by').AsString;
+      Result.CreatedAt := qry.FieldByName('created_at').AsDateTime;
+      Result.UpdatedAt := qry.FieldByName('updated_at').AsDateTime;
+    end;
+    
+  finally
+    FreeAndNil(qry);
+  end;
+
+end;
+
 class function TworkspaceUserDAO.getInstance: TworkspaceUserDAO;
 begin
   if Assigned(m_instance) and not m_instance.Connection.Connected  then
@@ -162,6 +212,52 @@ begin
     );
 
   Result := m_instance;
+end;
+
+function TworkspaceUserDAO.GetWorkspaceUserByEmail(
+  const aEmail: string): TWorkspaceUserDTO;
+var qry: TFDQuery;
+begin
+  Result := nil;
+  qry := TFDQuery.Create(nil);
+  try
+    qry.Connection := Connection;
+    qry.SQL.Add('SELECT id::varchar');
+    qry.SQL.Add(', workspace_id::varchar');
+    qry.SQL.Add(', nome');
+    qry.SQL.Add(', login');
+    qry.SQL.Add(', ativo');
+    qry.SQL.Add(', email');
+    qry.SQL.Add(', telefone');
+    qry.SQL.Add(', celular');
+    qry.SQL.Add(', created_by::varchar');
+    qry.SQL.Add(', updated_by::varchar');
+    qry.SQL.Add(', created_at');
+    qry.SQL.Add(', updated_at');
+    qry.SQL.Add('FROM workspace_users');
+    qry.SQL.Add('WHERE email = :email');
+    qry.ParamByName('email').AsString := aEmail;
+    qry.Open;
+    if not qry.IsEmpty then
+    begin
+      Result := TWorkspaceUserDTO.Create;
+      Result.Id := qry.FieldByName('id').AsString;
+      Result.WorkspaceId := qry.FieldByName('workspace_id').AsString;
+      Result.Nome := qry.FieldByName('nome').AsString;
+      Result.Login := qry.FieldByName('login').AsString;
+      Result.Ativo := qry.FieldByName('ativo').AsBoolean;
+      Result.Email := qry.FieldByName('email').AsString;
+      Result.Telefone := qry.FieldByName('telefone').AsString;
+      Result.Celular := qry.FieldByName('celular').AsString;
+      Result.CreatedBy := qry.FieldByName('created_by').AsString;
+      Result.UpdatedBy := qry.FieldByName('updated_by').AsString;
+      Result.CreatedAt := qry.FieldByName('created_at').AsDateTime;
+      Result.UpdatedAt := qry.FieldByName('updated_at').AsDateTime;
+    end;
+  finally
+    FreeAndNil(qry);
+  end;  
+
 end;
 
 function TworkspaceUserDAO.GetWorkspaceUserById(aWorkspaceID: string;

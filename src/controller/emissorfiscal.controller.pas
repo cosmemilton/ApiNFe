@@ -14,6 +14,9 @@ uses
   emissorfiscal.dto.workspaces,
   emissorfiscal.dao.workspaceusers,
   emissorfiscal.dto.workspaceusers,
+  emissorfiscal.dao.clientregister,
+  emissorfiscal.dto.clientregister,
+  emissorfiscal.dao.sendmail,
   emissorfiscal.validate,
   emissorfiscal.types,
   apinfe.constants.errors;
@@ -24,13 +27,14 @@ type
     private
       //
     public
-      GenerateJWTFunction: TGenerateJWTFunction;
-      function ReturnJWTLoginAdmin(const aUser, aPassword: string): string;
+      function ReturnJWTLoginAdminByUsername(const aUser, aPassword: string): string;
+      function ReturnJWTLoginAdminByEmail(const aEmail, aPassword: string): string;
       //
       function getAllAdminUsers(): TJSONArray;
       function createUser(const aIdUserLogin: string; const aValue:TJSONObject): TJSONObject;
       function getUserByID(const aIdUser: string): TJSONObject;
       function getUserByLogin(const aLogin: string): TJSONObject;
+      function getUserByEmail(const aLogin: string): TJSONObject;
       function updateUserByID(const aIdUserLogin: string; const aIdUser: string; const aValue:TJSONObject): TJSONObject;
       function deleteUserByID(const aIdUserLogin: string; const aIdUser: string): TJSONObject;
       //
@@ -45,70 +49,26 @@ type
       function getUserByWorkspace(const aIdWorkspace: string; const aIdUser: string): TJSONObject;
       function updateUserByWorkspace(const aIdUserLogin: string; const aIdWorkspace: string; const aIdUser: string; const aValue:TJSONObject): TJSONObject;
       function deleteUserByWorkspace(const aIdUserLogin: string; const aIdWorkspace: string; const aIdUser: string): TJSONObject;
-      
+      //
+      function clientRegister(const aJson: TJSONObject): TJSONObject;
+      function clientRegisterSendMailWelcome(const aWorkspaceId, aUserId: string): TJSONObject;
+      function clientRegisterSendMailRecovery(const aEmail: string): TJSONObject;
      
 
       //
-      procedure getAllClients();
-      procedure getAllCompany();
-      procedure getCompany();
-      procedure updateCompany();
-      procedure activeCompany();
-      procedure suspendCompany();
-      procedure deleteCompany();
-      procedure createdCompany();
-      procedure configIssuance();
-      procedure getSecret();
-      procedure createdSecret();
-      procedure updateSecret();
-      procedure deleteSecret();
-      procedure getDashboard();
-      procedure getLogDate();
-      procedure getLogID();
-      procedure getJWT();
-      procedure cretedNFe();
-      procedure disableNFe();
-      procedure cancelNFe();
-      procedure getXMLbyKey();
-      procedure getPDFbyKey();
-      procedure getAllIssuance();
       constructor Create;
   end;
 
 implementation
 
 uses
-  emissorfiscal.helper.strings, apinfe.constants;
+  emissorfiscal.helper.strings, apinfe.constants, apinfe.claims;
+
 { TControllerApi }
-
-procedure TControllerApiNFe.activeCompany;
-begin
-
-end;
-
-procedure TControllerApiNFe.cancelNFe;
-begin
-
-end;
-
-procedure TControllerApiNFe.configIssuance;
-begin
-
-end;
 
 constructor TControllerApiNFe.Create;
 begin
  inherited Create;
-end;
-
-procedure TControllerApiNFe.createdCompany;
-begin
-
-end;
-
-procedure TControllerApiNFe.createdSecret;
-begin
-
 end;
 
 function TControllerApiNFe.createUser(const aIdUserLogin: string; const aValue:TJSONObject): TJSONObject;
@@ -219,21 +179,6 @@ begin
   end;
 end;
 
-procedure TControllerApiNFe.cretedNFe;
-begin
-
-end;
-
-procedure TControllerApiNFe.deleteCompany;
-begin
-
-end;
-
-procedure TControllerApiNFe.deleteSecret;
-begin
-
-end;
-
 function TControllerApiNFe.deleteUserByID(const aIdUserLogin: string; const aIdUser: string): TJSONObject;
 begin
   result := TJSONObject.Create;
@@ -258,10 +203,6 @@ begin
   result.AddPair('rows', TWorkspacesDAO.getInstance.DeleteWorkspace(aIdWorkspace));
 end;
 
-procedure TControllerApiNFe.disableNFe;
-begin
-
-end;
 
 function TControllerApiNFe.getAllAdminUsers: TJSONArray;
 var adminUser: TAdminUserDTO;
@@ -282,20 +223,6 @@ begin
 
 end;
 
-procedure TControllerApiNFe.getAllClients;
-begin
-
-end;
-
-procedure TControllerApiNFe.getAllCompany;
-begin
-
-end;
-
-procedure TControllerApiNFe.getAllIssuance;
-begin
-
-end;
 
 function TControllerApiNFe.getAllUsersByWorkspace(
   const aIdWorkspace: string): TJSONArray;
@@ -337,39 +264,30 @@ begin
 
 end;
 
-procedure TControllerApiNFe.getCompany;
+function TControllerApiNFe.getUserByEmail(const aLogin: string): TJSONObject;
+var adminUser: TAdminUserDTO;
 begin
+  adminUser := nil;
+  try
+    if (aLogin=EmptyStr) then
+      exit(nil);
+    adminUser := TAdminUserDAO.getInstance.getUserByEmail(aLogin);
 
-end;
+    if not Assigned(adminUser) or adminUser.Id.IsEmpty then
+      raise Exception.Create(ERROR_USER_NOT_FOUND);
 
-procedure TControllerApiNFe.getDashboard;
-begin
-
-end;
-
-procedure TControllerApiNFe.getJWT;
-begin
-
-end;
-
-procedure TControllerApiNFe.getLogDate;
-begin
-
-end;
-
-procedure TControllerApiNFe.getLogID;
-begin
-
-end;
-
-procedure TControllerApiNFe.getPDFbyKey;
-begin
-
-end;
-
-procedure TControllerApiNFe.getSecret;
-begin
-
+    result := TJSONObject.Create
+      .AddPair('id', adminUser.Id)
+      .AddPair('name', adminUser.Name)
+      .AddPair('username', adminUser.Username)
+      .AddPair('email', adminUser.Email)
+      .AddPair('master', adminUser.Master)
+      .AddPair('created_at', DateToISO8601( adminUser.CreatedAt ))
+      .AddPair('updated_at', DateToISO8601( adminUser.UpdatedAt ));
+  finally
+    if Assigned(adminUser) then
+      FreeAndNil(adminUser);
+  end;
 end;
 
 function TControllerApiNFe.getUserByID(const aIdUser: string): TJSONObject;
@@ -405,7 +323,7 @@ begin
   try
     if (aLogin=EmptyStr) then
       exit(nil);
-    adminUser := TAdminUserDAO.getInstance.getUserByLogin(aLogin);
+    adminUser := TAdminUserDAO.getInstance.getUserByLoginByUsername(aLogin);
 
     if not Assigned(adminUser) or adminUser.Id.IsEmpty then
       raise Exception.Create(ERROR_USER_NOT_FOUND);
@@ -463,38 +381,43 @@ begin
 
 end;
 
-procedure TControllerApiNFe.getXMLbyKey;
-begin
-
-end;
-
-function TControllerApiNFe.ReturnJWTLoginAdmin(const aUser, aPassword: string): string;
+function TControllerApiNFe.ReturnJWTLoginAdminByEmail(const aEmail,
+  aPassword: string): string;
 begin
   Result:= '';
 
-  if TAdminUserDAO.getInstance.ValidateUser(aUser, aPassword) then begin
-    with TAdminUserDAO.getInstance.getUserByLogin(aUser, aPassword) do begin
-      if Assigned(GenerateJWTFunction) then
-        Result := GenerateJWTFunction(Id,Name,Email,Master);
+  if TAdminUserDAO.getInstance.ValidateUserByEmail(aEmail, aPassword) then begin
+    with TAdminUserDAO.getInstance.getUserByLoginByEmail(aEmail, aPassword) do begin
+        Result := TClaims.GenerateJWT(Id,Name,Email,Master);
     end;
   end;
 
 end;
 
-procedure TControllerApiNFe.suspendCompany;
+function TControllerApiNFe.ReturnJWTLoginAdminByUsername(const aUser, aPassword: string): string;
+var adminUserDTO: TAdminUserDTO;
 begin
+  Result:= '';
+  adminUserDTO:= nil;
+  if TAdminUserDAO.getInstance.ValidateUserByUsername(aUser, aPassword) then begin
+
+    try
+      adminUserDTO:= TAdminUserDAO.getInstance.getUserByLoginByUsername(aUser, aPassword);
+      Result := TClaims.GenerateJWT(
+          adminUserDTO.Id
+        , adminUserDTO.Name
+        , adminUserDTO.Email
+        , adminUserDTO.Master
+      );
+    finally
+      if Assigned(adminUserDTO) then
+      FreeAndNil(adminUserDTO);
+    end;
+
+  end;
 
 end;
 
-procedure TControllerApiNFe.updateCompany;
-begin
-
-end;
-
-procedure TControllerApiNFe.updateSecret;
-begin
-
-end;
 
 function TControllerApiNFe.updateUserByID(const aIdUserLogin: string;
   const aIdUser: string; const aValue:TJSONObject): TJSONObject;
@@ -568,6 +491,83 @@ begin
     FreeAndNil(workspace);
   end;
 
+end;
+
+function TControllerApiNFe.clientRegister(const aJson: TJSONObject): TJSONObject;
+var ClientRegisterDTO: TClientRegisterDTO;
+var newWorkstaceId: TGUID;
+var newWorkstaceUserId: TGUID;
+begin
+  result := nil;  
+  CreateGUID(newWorkstaceId);
+  CreateGUID(newWorkstaceUserId);
+  ClientRegisterDTO:= TClientRegisterDTO.Create;
+  try
+    ClientRegisterDTO.Workspace.Id := newWorkstaceId.ToString;
+    ClientRegisterDTO.Workspace.Name      := aJson.GetValue<string>('workspace_name', emptyStr);
+    ClientRegisterDTO.Workspace.CreatedAt := Now;
+    ClientRegisterDTO.Workspace.UpdatedAt := Now;
+    ClientRegisterDTO.WorkspaceUser.Id    := newWorkstaceUserId.ToString;
+    ClientRegisterDTO.WorkspaceUser.WorkspaceId := newWorkstaceId.ToString;
+    ClientRegisterDTO.WorkspaceUser.Nome  := aJson.GetValue<string>('name', emptyStr);
+    ClientRegisterDTO.WorkspaceUser.Login := aJson.GetValue<string>('login', emptyStr);
+    ClientRegisterDTO.WorkspaceUser.Email := aJson.GetValue<string>('email', emptyStr);
+    ClientRegisterDTO.WorkspaceUser.Telefone  := aJson.GetValue<string>('telefone', emptyStr);
+    ClientRegisterDTO.WorkspaceUser.Celular   := aJson.GetValue<string>('celular', emptyStr);
+    ClientRegisterDTO.WorkspaceUser.Ativo     := True;
+    ClientRegisterDTO.WorkspaceUser.CreatedBy := GUID_NULL;
+    ClientRegisterDTO.WorkspaceUser.UpdatedBy := GUID_NULL;
+    ClientRegisterDTO.WorkspaceUser.CreatedAt := Now;
+    ClientRegisterDTO.WorkspaceUser.UpdatedAt := Now;
+    TClientRegisterDAO.getInstance.RegisterClient(ClientRegisterDTO);
+    result := TJSONObject.Create;
+    result.AddPair('workspace_id', ClientRegisterDTO.Workspace.Id);
+    result.AddPair('workspace_user_id', ClientRegisterDTO.WorkspaceUser.Id);
+  finally
+    FreeAndNil(ClientRegisterDTO);
+  end;
+
+
+end;
+
+function TControllerApiNFe.clientRegisterSendMailRecovery(
+  const aEmail: string): TJSONObject;
+var WorkspaceUserDTO: TWorkspaceUserDTO;
+begin
+  if not aEmail.IsValidEmail then
+    raise Exception.Create(ERROR_INVALID_EMAIL);
+  WorkspaceUserDTO:= TworkspaceUserDAO.getInstance.getWorkspaceUserByEmail(aEmail);
+  if Assigned(WorkspaceUserDTO) then
+    TSendMailDAO.getInstance.SendRecoverPasswordEmail(
+        WorkspaceUserDTO.Email
+      , WorkspaceUserDTO.Nome
+      , 'http://localhost:8080'
+    );
+  result := TJSONObject.Create;
+
+  result.addPair('msg', format('Email enviado para %s', [aEmail.mailWithMask]));
+
+end;
+
+function TControllerApiNFe.clientRegisterSendMailWelcome(const aWorkspaceId,
+  aUserId: string): TJSONObject;
+var WorkspaceUserDTO: TWorkspaceUserDTO;  
+begin
+  if not aWorkspaceId.IsGUID then
+    raise Exception.Create(ERROR_WORKSPACE_NOT_FOUND);
+  if not aUserId.IsGUID then
+    raise Exception.Create(ERROR_USER_NOT_FOUND);
+  WorkspaceUserDTO:= TworkspaceUserDAO.getInstance.getWorkspaceUserByRegister(aWorkspaceId, aUserId);
+  if Assigned(WorkspaceUserDTO) then
+    TSendMailDAO.getInstance.SendWelcomeEmail(
+        WorkspaceUserDTO.Email
+      , WorkspaceUserDTO.Nome
+      , 'http://localhost:8080'
+    )
+  else
+    raise Exception.Create('Dados de credenciamento inválidos.');
+
+  result := TJSONObject.Create.AddPair('msg', format('Email enviado para %s', [WorkspaceUserDTO.Email.mailWithMask]) );
 end;
 
 end.
